@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bookmatch-SL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ad09a84a6b5c9582251f06e4f233e5ebdb8b385")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49d11019c3c330c25aa1445f23d549f6057d821f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bookmatch-SL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bookmatch-SL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
