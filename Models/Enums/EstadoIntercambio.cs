@@ -5,5 +5,6 @@ public enum EstadoIntercambio
     Pendiente,
     Aceptado,
     Rechazado,
-    Exitoso
+    Exitoso,
+    Cancelado
 }
