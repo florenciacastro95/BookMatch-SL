@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("f53e5d66-ebe0-43b1-a861-b481a7a2c0d5")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bookmatch-SL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66d999fc423dceccad55aff19f8bae7a808ff797")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a9d0c53373b684fb8819b6b3fb43611d8a153aaf")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bookmatch-SL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bookmatch-SL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

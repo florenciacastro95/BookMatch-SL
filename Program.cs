@@ -1,7 +1,28 @@
+using Bookmatch_SL.Repositories;
+using Bookmatch_SL.Repositories.Interfaces;
+using BookmatchSL.Data;
+using Microsoft.EntityFrameworkCore;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IRepoIntercambio, RepositorioIntercambio>();
+
+
+string conexionBaseDatos = builder.Configuration
+    .GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Falta configurar DefaultConnection en User Secrets. Ver el Readme.md");
+
+builder.Services.AddDbContext<BookDbContext>(opciones =>
+    opciones.UseMySql(
+        conexionBaseDatos,
+        ServerVersion.AutoDetect(conexionBaseDatos)
+    )
+);
+
 
 var app = builder.Build();
 

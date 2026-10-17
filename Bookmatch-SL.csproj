@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Bookmatch_SL</RootNamespace>
+    <UserSecretsId>f53e5d66-ebe0-43b1-a861-b481a7a2c0d5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
