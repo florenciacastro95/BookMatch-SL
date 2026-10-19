@@ -1,4 +1,5 @@
 namespace Bookmatch_SL.Models;
+
 using Bookmatch_SL.Models.Enums;
 public class Intercambio
 {
@@ -37,4 +38,24 @@ public class Intercambio
 
     public ICollection<Mensaje> Mensajes { get; set; }
         = new List<Mensaje>();
+
+
+    public bool PuedeCambiarA(EstadoIntercambio nuevoEstado)
+    {
+        if (Estado == EstadoIntercambio.Pendiente)
+        {
+            return nuevoEstado == EstadoIntercambio.Aceptado || nuevoEstado == EstadoIntercambio.Rechazado || nuevoEstado == EstadoIntercambio.Cancelado;
+        }
+
+        if (Estado == EstadoIntercambio.Aceptado)
+        {
+            return nuevoEstado == EstadoIntercambio.Exitoso || nuevoEstado == EstadoIntercambio.Cancelado;
+        }
+
+        return false;
+    }
+
+
+
+
 }

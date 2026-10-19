@@ -14,12 +14,17 @@ public class RepositorioIntercambio : IRepoIntercambio
     }
 
 
-    //alta
+    //alta, se inicia en ppendiente y si esta en activo se permite consultae
     public int Alta(Intercambio nuevo_intercambio)
     {
+        nuevo_intercambio.Estado = EstadoIntercambio.Pendiente;
         nuevo_intercambio.Activo = true;
+        nuevo_intercambio.CreatedAt = DateTime.Now;
+
         contexto_bd.Intercambios.Add(nuevo_intercambio);
         contexto_bd.SaveChanges();
+
+
         return nuevo_intercambio.Id;
     }
 
@@ -37,11 +42,12 @@ public class RepositorioIntercambio : IRepoIntercambio
         return contexto_bd.SaveChanges();
     }
 
-    //modificaicon
+    //modificaicon,user no pueden modificar, pero implementado en IRepo
     public int Modificacion(Intercambio intercambio_a_modificar)
     {
-        contexto_bd.Intercambios.Update(intercambio_a_modificar);
-        return contexto_bd.SaveChanges();
+        throw new NotSupportedException(
+        "El intercambio no admite edición general. Utilice Aceptar, Rechazar, Cancelar o MarcarExitoso."
+    );
     }
 
     // listado y  paginado-
@@ -98,7 +104,7 @@ public class RepositorioIntercambio : IRepoIntercambio
             .ToList();
     }
 
-//intermcabios pendientes de todos los user
+    //intermcabios pendientes de todos los user
     public IList<Intercambio> ObtenerPorEstado(EstadoIntercambio estado)
     {
         return contexto_bd.Intercambios
@@ -109,8 +115,189 @@ public class RepositorioIntercambio : IRepoIntercambio
     }
 
 
+    public int Rechazar(int idIntercambio, int idUsuarioAutenticado)
+    {
+        Intercambio? solicitudIntercambio = ObtenerPorId(idIntercambio);
+
+        if (solicitudIntercambio == null)
+        {
+            return 0;
+        }
+
+        if (solicitudIntercambio.UsuarioDestinoId != idUsuarioAutenticado)
+        {
+            return 0;
+        }
+
+        if (!solicitudIntercambio.PuedeCambiarA(EstadoIntercambio.Rechazado))
+        {
+            return 0;
+        }
+
+        solicitudIntercambio.Estado = EstadoIntercambio.Rechazado;
+
+        return contexto_bd.SaveChanges();
+    }
 
 
+    public int Aceptar(int idIntercambio, int idUsuarioAutenticado)
+    {
+        Intercambio? solicitudIntercambio = ObtenerPorId(idIntercambio);
+
+        if (solicitudIntercambio == null)
+        {
+            return 0;
+        }
+
+        if (solicitudIntercambio.UsuarioDestinoId != idUsuarioAutenticado)
+        {
+            return 0;
+        }
+
+        if (!solicitudIntercambio.PuedeCambiarA(EstadoIntercambio.Aceptado))
+        {
+            return 0;
+        }
+
+        if (solicitudIntercambio.UsuarioOrigenId == solicitudIntercambio.UsuarioDestinoId)
+        {
+            return 0;
+        }
+
+        if (solicitudIntercambio.LibroOfrecidoId == solicitudIntercambio.LibroSolicitadoId)
+        {
+            return 0;
+        }
+
+        Libro? libroOfrecido = contexto_bd.Libros
+            .Find(solicitudIntercambio.LibroOfrecidoId);
+
+        Libro? libroSolicitado = contexto_bd.Libros
+            .Find(solicitudIntercambio.LibroSolicitadoId);
+
+        if (libroOfrecido == null || libroSolicitado == null)
+        {
+            return 0;
+        }
+
+        if (!libroOfrecido.Activo || !libroSolicitado.Activo)
+        {
+            return 0;
+        }
+
+        if (!libroOfrecido.Disponible || !libroSolicitado.Disponible)
+        {
+            return 0;
+        }
+
+        if (libroOfrecido.UsuarioId != solicitudIntercambio.UsuarioOrigenId)
+        {
+            return 0;
+        }
+
+        if (libroSolicitado.UsuarioId != solicitudIntercambio.UsuarioDestinoId)
+        {
+            return 0;
+        }
+
+        solicitudIntercambio.Estado = EstadoIntercambio.Aceptado;
+        libroOfrecido.Disponible = false;
+        libroSolicitado.Disponible = false;
+
+        return contexto_bd.SaveChanges();
+    }
+
+
+
+    public int Cancelar(int idIntercambio, int idUsuarioAutenticado)
+    {
+        Intercambio? solicitudIntercambio = ObtenerPorId(idIntercambio);
+        if (solicitudIntercambio == null)
+        {
+            return 0;
+        }
+
+        bool esUsuarioOrigen = solicitudIntercambio.UsuarioOrigenId == idUsuarioAutenticado;
+        bool esUsuarioDestino = solicitudIntercambio.UsuarioDestinoId == idUsuarioAutenticado;
+
+        if (!esUsuarioOrigen && !esUsuarioDestino)
+        {
+            return 0;
+        }
+
+        if (!solicitudIntercambio.PuedeCambiarA(EstadoIntercambio.Cancelado))
+        {
+            return 0;
+        }
+
+        if (solicitudIntercambio.Estado == EstadoIntercambio.Aceptado)
+        {
+            Libro? libroOfrecido = contexto_bd.Libros
+                .Find(solicitudIntercambio.LibroOfrecidoId);
+
+            Libro? libroSolicitado = contexto_bd.Libros
+                .Find(solicitudIntercambio.LibroSolicitadoId);
+
+            if (libroOfrecido == null || libroSolicitado == null)
+            {
+                return 0;
+            }
+            libroOfrecido.Disponible = true;
+            libroSolicitado.Disponible = true;
+        }
+
+        solicitudIntercambio.Estado = EstadoIntercambio.Cancelado;
+        return contexto_bd.SaveChanges();
+    }
+
+    public int MarcarExitoso(int idIntercambio, int idUsuarioAutenticado)
+    {
+        Intercambio? solicitudIntercambio = ObtenerPorId(idIntercambio);
+
+        if (solicitudIntercambio == null)
+        {
+            return 0;
+        }
+
+        bool esUsuarioOrigen = solicitudIntercambio.UsuarioOrigenId == idUsuarioAutenticado;
+
+        bool esUsuarioDestino = solicitudIntercambio.UsuarioDestinoId == idUsuarioAutenticado;
+
+        if (!esUsuarioOrigen && !esUsuarioDestino)
+        {
+            return 0;
+        }
+
+        if (!solicitudIntercambio.PuedeCambiarA(EstadoIntercambio.Exitoso))
+        {
+            return 0;
+        }
+
+        solicitudIntercambio.Estado = EstadoIntercambio.Exitoso;
+
+
+        return contexto_bd.SaveChanges();
+    }
+
+    public IList<Intercambio> ObtenerEnviados(int usuarioId)
+    {
+        return contexto_bd.Intercambios
+            .Where(solicitudIntercambio =>
+                solicitudIntercambio.Activo &&
+                solicitudIntercambio.UsuarioOrigenId == usuarioId)
+            .OrderBy(solicitudIntercambio => solicitudIntercambio.Id)
+            .ToList();
+    }
+
+    public IList<Intercambio> ObtenerRecibidos(int usuarioId)
+    {
+        return contexto_bd.Intercambios
+            .Where(solicitudIntercambio =>
+                solicitudIntercambio.Activo &&
+                solicitudIntercambio.UsuarioDestinoId == usuarioId)
+            .OrderBy(solicitudIntercambio => solicitudIntercambio.Id)
+            .ToList();
+    }
 
 
 

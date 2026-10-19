@@ -32,6 +32,14 @@ public class IntercambioController : Controller
 
     public IActionResult Index()
     {
+        IList<Bookmatch_SL.Models.Intercambio> intercambiosEncontrados =
+        repositorioIntercambio.ObtenerLista(1, 10);
+        return View(intercambiosEncontrados);
+    }
+
+    [HttpGet]
+    public IActionResult Solicitar()
+    {
         return View();
     }
 
