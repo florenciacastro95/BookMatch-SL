@@ -1,4 +1,5 @@
 namespace Bookmatch_SL.Models;
+
 using Bookmatch_SL.Models.Enums;
 public class Libro
 {
@@ -21,8 +22,8 @@ public class Libro
     public string? Aclaracion { get; set; }
 
     public string PortadaUrl { get; set; } = string.Empty;
-
-    public EstadoConservacion EstadoConservacion { get; set; }
+    //para permitir libros digital
+    public EstadoConservacion? EstadoConservacion { get; set; }
 
     public bool Disponible { get; set; }
 
@@ -31,7 +32,7 @@ public class Libro
     public DateTime CreatedAt { get; set; }
 
 
-  
+
     public Usuario Usuario { get; set; } = null!;
 
     public Categoria Categoria { get; set; } = null!;

@@ -23,8 +23,8 @@ else
                 <th>Número</th>
                 <th>Usuario origen (ID)</th>
                 <th>Usuario destino (ID)</th>
-                <th>Libro ofrecido (ID)</th>
-                <th>Libro solicitado (ID)</th>
+                <th>Libro ofrecido </th>
+                <th>Libro solicitado </th>
                 <th>Estado</th>
                 <th>Fecha</th>
             </tr>
@@ -36,8 +36,8 @@ else
                     <td>@solicitudIntercambio.Id</td>
                     <td>@solicitudIntercambio.UsuarioOrigenId</td>
                     <td>@solicitudIntercambio.UsuarioDestinoId</td>
-                    <td>@solicitudIntercambio.LibroOfrecidoId</td>
-                    <td>@solicitudIntercambio.LibroSolicitadoId</td>
+                    <td>@solicitudIntercambio.LibroOfrecido.Titulo</td>
+                    <td>@solicitudIntercambio.LibroSolicitado.Titulo</td>
                     <td>@solicitudIntercambio.Estado</td>
                     <td>@solicitudIntercambio.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                 </tr>

@@ -1,5 +1,8 @@
 using Bookmatch_SL.Models;
 using Microsoft.EntityFrameworkCore;
+using Bookmatch_SL.Models.Enums;
+
+
 
 namespace BookmatchSL.Data;
 
@@ -84,6 +87,69 @@ public class BookDbContext : DbContext
 
         modelBuilder.Entity<Intercambio>()
             .Property(intercambio => intercambio.CreatedAt)
+            .HasColumnName("created_at");
+
+        modelBuilder.Entity<Libro>().ToTable("libro");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Id)
+            .HasColumnName("id");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.UsuarioId)
+            .HasColumnName("usuario_id");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.CategoriaId)
+            .HasColumnName("categoria_id");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Titulo)
+            .HasColumnName("titulo");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Autor)
+            .HasColumnName("autor");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Editorial)
+            .HasColumnName("editorial");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Idioma)
+            .HasColumnName("idioma");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Formato)
+            .HasColumnName("formato")
+            .HasConversion(
+                formato => formato.ToString().Replace("Tapa", "Tapa "),
+                texto => Enum.Parse<Formato>(texto.Replace(" ", ""), true)
+            );
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Aclaracion)
+            .HasColumnName("aclaracion");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.PortadaUrl)
+            .HasColumnName("portada_url");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.EstadoConservacion)
+            .HasColumnName("estado_conservacion")
+            .HasConversion<string>();
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Disponible)
+            .HasColumnName("disponible");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.Activo)
+            .HasColumnName("activo");
+
+        modelBuilder.Entity<Libro>()
+            .Property(libro => libro.CreatedAt)
             .HasColumnName("created_at");
 
 

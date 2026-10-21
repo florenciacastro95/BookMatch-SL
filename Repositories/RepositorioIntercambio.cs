@@ -3,6 +3,8 @@ using Bookmatch_SL.Models.Enums;
 using Bookmatch_SL.Repositories.Interfaces;
 using BookmatchSL.Data;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Bookmatch_SL.Repositories;
 
 public class RepositorioIntercambio : IRepoIntercambio
@@ -14,16 +16,61 @@ public class RepositorioIntercambio : IRepoIntercambio
     }
 
 
-    //alta, se inicia en ppendiente y si esta en activo se permite consultae
+    //alta, solicitud=pendiente, libros siguen disponibles hasta que se el ok del intermcabio 
     public int Alta(Intercambio nuevo_intercambio)
     {
+        if (nuevo_intercambio.UsuarioOrigenId <= 0 || nuevo_intercambio.UsuarioDestinoId <= 0)
+        {
+            return 0;
+        }
+
+        if (nuevo_intercambio.UsuarioOrigenId == nuevo_intercambio.UsuarioDestinoId)
+        {
+            return 0;
+        }
+
+        if (nuevo_intercambio.LibroOfrecidoId == nuevo_intercambio.LibroSolicitadoId)
+        {
+            return 0;
+        }
+
+        Libro? libroOfrecido = contexto_bd.Libros
+            .Find(nuevo_intercambio.LibroOfrecidoId);
+
+        Libro? libroSolicitado = contexto_bd.Libros
+            .Find(nuevo_intercambio.LibroSolicitadoId);
+
+        if (libroOfrecido == null || libroSolicitado == null)
+        {
+            return 0;
+        }
+
+        if (!libroOfrecido.Activo || !libroSolicitado.Activo)
+        {
+            return 0;
+        }
+
+        if (!libroOfrecido.Disponible || !libroSolicitado.Disponible)
+        {
+            return 0;
+        }
+
+        if (libroOfrecido.UsuarioId != nuevo_intercambio.UsuarioOrigenId)
+        {
+            return 0;
+        }
+
+        if (libroSolicitado.UsuarioId != nuevo_intercambio.UsuarioDestinoId)
+        {
+            return 0;
+        }
+
         nuevo_intercambio.Estado = EstadoIntercambio.Pendiente;
         nuevo_intercambio.Activo = true;
         nuevo_intercambio.CreatedAt = DateTime.Now;
 
         contexto_bd.Intercambios.Add(nuevo_intercambio);
         contexto_bd.SaveChanges();
-
 
         return nuevo_intercambio.Id;
     }
@@ -69,6 +116,8 @@ public class RepositorioIntercambio : IRepoIntercambio
         int cantidadAOmitir = (nroPagina - 1) * tamPagina;
 
         return contexto_bd.Intercambios
+            .Include(intercambio => intercambio.LibroOfrecido)
+.Include(intercambio => intercambio.LibroSolicitado)
             .Where(intercambio => intercambio.Activo)
             .OrderBy(intercambio => intercambio.Id)
             .Skip(cantidadAOmitir)
@@ -87,6 +136,8 @@ public class RepositorioIntercambio : IRepoIntercambio
     public Intercambio? ObtenerPorId(int idIntercambio)
     {
         return contexto_bd.Intercambios
+         .Include(intercambio => intercambio.LibroOfrecido)
+        .Include(intercambio => intercambio.LibroSolicitado)
             .FirstOrDefault(intercambio =>
                 intercambio.Id == idIntercambio && intercambio.Activo);
     }
