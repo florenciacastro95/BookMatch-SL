@@ -10,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IRepoIntercambio, RepositorioIntercambio>();
-
+builder.Services.AddScoped<IRepoLibro, RepositorioLibro>();
+builder.Services.AddScoped<IRepoCategoria, RepositorioCategoria>();
 
 string conexionBaseDatos = builder.Configuration
     .GetConnectionString("DefaultConnection")

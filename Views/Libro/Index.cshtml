@@ -1,0 +1,30 @@
+@model IEnumerable<Bookmatch_SL.Models.Libro>
+
+@{
+    ViewData["Title"] = "Catálogo de Libros";
+}
+
+<div class="container mt-4">
+    <h2>Catálogo de libros para match</h2>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Publicar nuevo libro</a>
+    </p>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <img src="@item.PortadaUrl" class="card-img-top" alt="Portada" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Titulo</h5>
+                        <p class="card-text"><strong>Autor:</strong> @item.Autor</p>
+                        <p class="card-text"><strong>Categoría:</strong> @item.Categoria?.Nombre</p>
+                        <p class="card-text"><strong>Estado:</strong> @item.EstadoConservacion</p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
