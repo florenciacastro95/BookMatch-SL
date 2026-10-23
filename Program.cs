@@ -2,7 +2,7 @@ using Bookmatch_SL.Repositories;
 using Bookmatch_SL.Repositories.Interfaces;
 using BookmatchSL.Data;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +12,18 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRepoIntercambio, RepositorioIntercambio>();
 builder.Services.AddScoped<IRepoLibro, RepositorioLibro>();
 builder.Services.AddScoped<IRepoCategoria, RepositorioCategoria>();
+builder.Services.AddScoped<IRepoUsuarios, RepositorioUsuario>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    });
 
 string conexionBaseDatos = builder.Configuration
     .GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Falta configurar DefaultConnection en User Secrets. Ver el Readme.md");
+    ?? throw new InvalidOperationException("Falta configurar DefaultConnection en User Secrets.");
 
 builder.Services.AddDbContext<BookDbContext>(opciones =>
     opciones.UseMySql(
@@ -38,6 +46,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

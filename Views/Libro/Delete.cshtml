@@ -1,0 +1,24 @@
+@model Bookmatch_SL.Models.Libro
+
+@{
+    ViewData["Title"] = "Eliminar Libro";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2>Eliminar Libro</h2>
+    <div class="alert alert-danger">
+        <h4>¿Estás seguro de que querés dar de baja este libro?</h4>
+    </div>
+    
+    <div>
+        <p><strong>Título:</strong> @Model.Titulo</p>
+        <p><strong>Autor:</strong> @Model.Autor</p>
+        <p><strong>Editorial:</strong> @Model.Editorial</p>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
