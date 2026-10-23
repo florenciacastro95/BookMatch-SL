@@ -29,3 +29,37 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+
+
+
+
+/*----listado  intercambios-------*/
+
+ .listado-intercambios {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: collapse;
+    color: inherit;
+}
+
+.listado-intercambios > thead > tr > th,
+.listado-intercambios > tbody > tr > td {
+    padding: 1rem;
+    vertical-align: top;
+    background-color: transparent;
+    box-shadow: none;
+    border: 0;
+    border-bottom: 1px solid var(--color-arena, #d6c5b1);
+}
+
+.listado-intercambios > thead > tr > th {
+    font-weight: 700;
+    border-bottom: 2px solid var(--color-secundario, #32232A);
+}
+
+.listado-intercambios a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}

@@ -30,12 +30,44 @@ public class IntercambioController : Controller
         this.repositorioIntercambio = repositorioIntercambio;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(int pagina = 1)
     {
+        if (pagina < 1)
+        {
+            pagina = 1;
+        }
+
+        int cantidad = repositorioIntercambio.ObtenerCantidad();
+        int totalPaginas = (int)Math.Ceiling(cantidad / 10.0);
+
+        if (totalPaginas < 1)
+        {
+            totalPaginas = 1;
+        }
+        if (pagina > totalPaginas)
+        {
+            pagina = totalPaginas;
+        }
         IList<Bookmatch_SL.Models.Intercambio> intercambiosEncontrados =
-        repositorioIntercambio.ObtenerLista(1, 10);
+            repositorioIntercambio.ObtenerLista(pagina, 10);
+        ViewBag.PaginaActual = pagina;
+        ViewBag.TotalPaginas = totalPaginas;
         return View(intercambiosEncontrados);
     }
+
+    [HttpGet]
+    public IActionResult Detalle(int id)
+    {
+        var intercambioEncontrado = repositorioIntercambio.ObtenerPorId(id);
+
+        if (intercambioEncontrado == null)
+        {
+            return NotFound("Ups, no hay intercambios aún");
+        }
+
+        return View(intercambioEncontrado);
+    }
+
 
     [HttpGet]
     public IActionResult Solicitar()

@@ -17,31 +17,67 @@
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Número</th>
-                <th>Usuario origen (ID)</th>
-                <th>Usuario destino (ID)</th>
-                <th>Libro ofrecido </th>
-                <th>Libro solicitado </th>
-                <th>Estado</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Bookmatch_SL.Models.Intercambio solicitudIntercambio in Model)
-            {
+    <div class="table-responsive">
+        <table class="table listado-intercambios">
+            <thead>
                 <tr>
-                    <td>@solicitudIntercambio.Id</td>
-                    <td>@solicitudIntercambio.UsuarioOrigenId</td>
-                    <td>@solicitudIntercambio.UsuarioDestinoId</td>
-                    <td>@solicitudIntercambio.LibroOfrecido.Titulo</td>
-                    <td>@solicitudIntercambio.LibroSolicitado.Titulo</td>
-                    <td>@solicitudIntercambio.Estado</td>
-                    <td>@solicitudIntercambio.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <th>Número</th>
+                    <th>Usuario origen (id)</th>
+                    <th>Usuario destino (id)</th>
+                    <th>Libro ofrecido </th>
+                    <th>Libro solicitado </th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+
+                    <th>Acciones</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (Bookmatch_SL.Models.Intercambio solicitudIntercambio in Model)
+                {
+                    <tr>
+                        <td>@solicitudIntercambio.Id</td>
+                        <td>@solicitudIntercambio.UsuarioOrigenId</td>
+                        <td>@solicitudIntercambio.UsuarioDestinoId</td>
+                        <td>@solicitudIntercambio.LibroOfrecido.Titulo</td>
+                        <td>@solicitudIntercambio.LibroSolicitado.Titulo</td>
+                        <td>@solicitudIntercambio.Estado</td>
+                        <td>@solicitudIntercambio.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    
+                    
+                    
+                        <td>
+                            <a asp-action="Detalle" asp-route-id="@solicitudIntercambio.Id">
+                                Ver detalle
+                            </a>
+                        </td>
+               
+               
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        @if (ViewBag.PaginaActual > 1)
+        {
+            <a asp-action="Index" asp-route-pagina="@(ViewBag.PaginaActual - 1)" class="btn btn-secondary">
+                Anterior
+            </a>
+        }
+
+        <span>
+            Página @ViewBag.PaginaActual de @ViewBag.TotalPaginas
+        </span>
+
+        @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+        {
+            <a asp-action="Index" asp-route-pagina="@(ViewBag.PaginaActual + 1)" class="btn btn-secondary">
+                Siguiente
+            </a>
+        }
+    </div>
+
+
 }

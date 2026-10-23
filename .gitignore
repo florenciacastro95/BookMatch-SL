@@ -11,3 +11,6 @@ Aignorar/
 
 Thumbs.db
 .DS_Store
+obj/Debug/net10.0/Bookmatch-SL.AssemblyInfo.cs
+/obj/Debug
+/obj
