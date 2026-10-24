@@ -92,8 +92,7 @@ public class UsuariosController : Controller
                 "El rol seleccionado no es válido.");
         }
 
-        // No permitimos que el administrador se quite su propio rol
-        // ni que desactive su cuenta desde este formulario.
+        //No permitimos que el admin se quite su propio rol ni que desactive su cuenta desde este formulario.
         string? idAutenticado =
             User.FindFirst(
                 System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;

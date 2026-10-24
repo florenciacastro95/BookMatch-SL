@@ -1,0 +1,68 @@
+@model IList<Auditoria>
+
+@{
+    ViewData["Title"] = "Auditoría";
+    int paginaActual = ViewBag.PaginaActual;
+    int totalPaginas = ViewBag.TotalPaginas;
+}
+
+<h1>Auditoría del sistema</h1>
+
+<p>
+    Historial de altas, modificaciones, bajas y acciones registradas.
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Fecha y hora (UTC)</th>
+                <th>Usuario ID</th>
+                <th>Acción</th>
+                <th>Entidad</th>
+                <th>ID afectado</th>
+                <th>Datos anteriores</th>
+                <th>Datos nuevos</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var registro in Model)
+        {
+            <tr>
+                <td>@registro.FechaHora.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@(registro.IdUsuario?.ToString() ?? "No identificado")</td>
+                <td>@registro.Accion</td>
+                <td>@registro.Entidad</td>
+                <td>@(registro.IdEntidad?.ToString() ?? "-")</td>
+
+                <td>
+                    <pre class="small text-wrap">@registro.DatosAnteriores</pre>
+                </td>
+
+                <td>
+                    <pre class="small text-wrap">@registro.DatosNuevos</pre>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (totalPaginas > 1)
+{
+    <nav aria-label="Paginación de auditoría">
+        <ul class="pagination">
+            @for (int pagina = 1; pagina <= totalPaginas; pagina++)
+            {
+                <li class="page-item @(pagina == paginaActual ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pagina="@pagina">
+                        @pagina
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
