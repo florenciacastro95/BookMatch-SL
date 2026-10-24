@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
-
+using Bookmatch_SL.Repositories.Interfaces;
 
 namespace Bookmatch_SL.Controllers;
 /*
@@ -16,19 +15,19 @@ public class IntercambioController : Controller
  ------------------ controller recibe este repo y devuelve los 10 primeros intercambiso. 
 */
 
-using Bookmatch_SL.Repositories.Interfaces;
-
-
-
-
 public class IntercambioController : Controller
 {
     private readonly IRepoIntercambio repositorioIntercambio;
+    private readonly IRepoLibro repositorioLibro;
 
-    public IntercambioController(IRepoIntercambio repositorioIntercambio)
+    public IntercambioController(IRepoIntercambio repositorioIntercambio, IRepoLibro repositorioLibro)
     {
         this.repositorioIntercambio = repositorioIntercambio;
+        this.repositorioLibro = repositorioLibro;
     }
+
+
+
 
     public IActionResult Index(int pagina = 1)
     {
@@ -56,22 +55,41 @@ public class IntercambioController : Controller
     }
 
     [HttpGet]
-    public IActionResult Detalle(int id)
+    public IActionResult Detalle(int id, int pagina = 1)
     {
         var intercambioEncontrado = repositorioIntercambio.ObtenerPorId(id);
-
         if (intercambioEncontrado == null)
         {
             return NotFound("Ups, no hay intercambios aún");
         }
+        if (pagina < 1)
+        {
+            pagina = 1;
+        }
+
+        ViewBag.PaginaActual = pagina;
 
         return View(intercambioEncontrado);
     }
 
 
     [HttpGet]
-    public IActionResult Solicitar()
+    public IActionResult Solicitar(int id)
     {
+        var libroSolicitado = repositorioLibro.ObtenerPorId(id);
+
+        if (libroSolicitado == null)
+        {
+            return NotFound("Lo sentimos, no se encontró el libro solicitado.");
+        }
+
+        if (!libroSolicitado.Disponible)
+        {
+            return BadRequest("Lo sentimos, el libro ya no está disponible para intercambio.");
+        }
+
+        ViewBag.LibroSolicitadoId = libroSolicitado.Id;
+        ViewBag.LibroSolicitadoTitulo = libroSolicitado.Titulo;
         return View();
     }
 

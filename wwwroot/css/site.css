@@ -63,3 +63,90 @@ body {
     text-decoration: underline;
     text-underline-offset: 3px;
 }
+
+
+
+/* ----- botones  --- */
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.2rem;
+    border: 1px solid transparent;
+    border-radius: 0;
+    font: inherit;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.boton-principal {
+    background-color: var(--color-ciruela, #32232a);
+    border-color: var(--color-ciruela, #32232a);
+    color: #ffffff;
+}
+
+.boton-principal:hover {
+    background-color: var(--color-oscuro, #1d1617);
+    border-color: var(--color-oscuro, #1d1617);
+    color: #ffffff;
+}
+
+.boton-secundario {
+    background-color: #ffffff;
+    border-color: var(--color-ciruela, #32232a);
+    color: var(--color-ciruela, #32232a);
+}
+
+.boton-secundario:hover {
+    background-color: var(--color-arena, #d6c5b1);
+    color: var(--color-ciruela, #32232a);
+}
+
+.boton:focus-visible {
+    outline: 3px solid var(--color-ocre, #b18754);
+    outline-offset: 3px;
+}
+
+.boton:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.boton:disabled:hover {
+    background-color: var(--color-ciruela, #32232a);
+    border-color: var(--color-ciruela, #32232a);
+    color: #ffffff;
+}
+
+
+/** fuente -- 
+Andika en body, titulos Josefin Sans------------- */
+
+:root {
+    --fuente-titulos: "Josefin Sans", sans-serif;
+    --fuente-texto: "Andika", sans-serif;
+}
+
+body {
+    font-family: var(--fuente-texto);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--fuente-titulos);
+    font-weight: 600;
+}
+
+button,
+input,
+select,
+textarea,
+.boton {
+    font-family: inherit;
+}

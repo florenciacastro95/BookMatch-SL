@@ -47,7 +47,8 @@ else
                     
                     
                         <td>
-                            <a asp-action="Detalle" asp-route-id="@solicitudIntercambio.Id">
+                            <a asp-action="Detalle" asp-route-id="@solicitudIntercambio.Id"
+                               asp-route-pagina="@ViewBag.PaginaActual">
                                 Ver detalle
                             </a>
                         </td>
@@ -58,6 +59,9 @@ else
             </tbody>
         </table>
     </div>
+
+
+
 
     <div class="d-flex justify-content-between align-items-center">
         @if (ViewBag.PaginaActual > 1)
