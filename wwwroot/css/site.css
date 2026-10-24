@@ -34,17 +34,17 @@ body {
 
 
 
-/*----listado  intercambios-------*/
+/*----listado  -------*/
 
- .listado-intercambios {
+ .listado{
     width: 100%;
     margin-bottom: 0;
     border-collapse: collapse;
     color: inherit;
 }
 
-.listado-intercambios > thead > tr > th,
-.listado-intercambios > tbody > tr > td {
+.listado> thead > tr > th,
+.listado > tbody > tr > td {
     padding: 1rem;
     vertical-align: top;
     background-color: transparent;
@@ -53,12 +53,12 @@ body {
     border-bottom: 1px solid var(--color-arena, #d6c5b1);
 }
 
-.listado-intercambios > thead > tr > th {
+.listado > thead > tr > th {
     font-weight: 700;
     border-bottom: 2px solid var(--color-secundario, #32232A);
 }
 
-.listado-intercambios a {
+.listado a {
     color: inherit;
     text-decoration: underline;
     text-underline-offset: 3px;

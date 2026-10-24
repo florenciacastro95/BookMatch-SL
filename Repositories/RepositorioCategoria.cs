@@ -28,11 +28,16 @@ public class RepositorioCategoria : IRepoCategoria
     public int Baja(int id)
     {
         var categoria = ObtenerPorId(id);
-        if (categoria == null) return 0;
-
+        if (categoria == null || TieneLibrosActivos(id))
+        {
+            return 0;
+        }
         categoria.Activo = false;
         return contexto_bd.SaveChanges();
     }
+
+
+
 
     public int Modificacion(Categoria entidad)
     {
@@ -69,4 +74,20 @@ public class RepositorioCategoria : IRepoCategoria
         return contexto_bd.Categorias
             .FirstOrDefault(c => c.Id == id && c.Activo);
     }
+
+    public bool ExisteNombre(string nombre, int idExcluir = 0)
+    {
+        string nombreBuscado = nombre.Trim();
+        return contexto_bd.Categorias.Any(categoria =>
+            categoria.Activo &&
+            categoria.Id != idExcluir &&
+            categoria.Nombre == nombreBuscado);
+    }
+
+    public bool TieneLibrosActivos(int id)
+    {
+        return contexto_bd.Libros.Any(libro =>
+            libro.CategoriaId == id && libro.Activo);
+    }
+
 }

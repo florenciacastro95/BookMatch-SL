@@ -1,0 +1,23 @@
+@model Bookmatch_SL.Models.Categoria
+
+@{
+    ViewData["Title"] = "Desactivar categoría";
+}
+
+<h1>Desactivar categoría</h1>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+ 
+<p>Esta seguro de que desea desactivar la categoría @Model.Nombre ?</p>
+<small>Esta categoría dejará de aparecer en el listado</small>
+
+<form asp-action="Desactivar" asp-route-id="@Model.Id" method="post">
+    <div class="d-flex gap-3">
+        <button type="submit" class="boton boton-principal">
+            Confirmar desactivación
+        </button>
+
+        <a asp-action="Index" class="boton boton-secundario">
+            Cancelar
+        </a>
+    </div>
+</form>

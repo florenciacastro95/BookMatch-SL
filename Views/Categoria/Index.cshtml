@@ -1,0 +1,71 @@
+@model IList<Bookmatch_SL.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<h1>Categorías</h1>
+
+@if (Model.Count == 0)
+{
+    <p>Aún no hay registros de categorías</p>
+}
+else
+{
+    <table class="table listado">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var categoria in Model)
+            {
+                <tr>
+                    <td>@categoria.Id</td>
+                    <td>@categoria.Nombre</td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@categoria.Id">
+                            Editar
+                        </a>
+                        <a asp-action="Desactivar" asp-route-id="@categoria.Id">
+                            Desactivar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (ViewBag.TotalPaginas > 1)
+    {
+        <nav aria-label="Páginas de categorías" class="d-flex justify-content-between align-items-center mt-4">
+
+            <div>
+                @if (ViewBag.PaginaActual > 1)
+                {
+                    <a asp-action="Index" asp-route-pagina="@(ViewBag.PaginaActual - 1)" class="boton boton-secundario">
+                        Anterior
+                    </a>
+                }
+            </div>
+
+            <span>
+                Página @ViewBag.PaginaActual de @ViewBag.TotalPaginas
+            </span>
+
+            <div>
+                @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+                {
+                    <a asp-action="Index" asp-route-pagina="@(ViewBag.PaginaActual + 1)" class="boton boton-secundario">
+                        Siguiente
+                    </a>
+                }
+            </div>
+        </nav>
+    }
+
+
+
+}
