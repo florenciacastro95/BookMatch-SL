@@ -35,7 +35,7 @@
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
     </dl>
 
-    <a asp-action="Index" class="enlace-volver">
+    <a asp-action="Index" asp-route-pagina="@ViewBag.PaginaActual" class="boton boton-secundario"">
         Regresar al listado
     </a>
 </div>
