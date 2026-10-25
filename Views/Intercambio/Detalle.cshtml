@@ -1,0 +1,41 @@
+@model Bookmatch_SL.Models.Intercambio
+
+@{
+    ViewData["Title"] = "Detalle del intercambio";
+}
+
+<div class="detalle-intercambio mt-4">
+    <h1 class="mb-4">Intercambio número @Model.Id</h1>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <dl class="mb-0">
+                <dt>Libro ofrecido</dt>
+                <dd>@Model.LibroOfrecido.Titulo</dd>
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            <dl class="mb-0">
+                <dt>Libro solicitado</dt>
+                <dd>@Model.LibroSolicitado.Titulo</dd>
+            </dl>
+        </div>
+    </div>
+
+    <dl class="mb-4">
+        <dt>Estado</dt>
+        <dd>
+            <span class="estado-intercambio estado-@Model.Estado.ToString().ToLowerInvariant()">
+                @Model.Estado
+            </span>
+        </dd>
+
+        <dt>Fecha de solicitud de intercambio</dt>
+        <dd>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+    </dl>
+
+    <a asp-action="Index" asp-route-pagina="@ViewBag.PaginaActual" class="boton boton-secundario"">
+        Regresar al listado
+    </a>
+</div>

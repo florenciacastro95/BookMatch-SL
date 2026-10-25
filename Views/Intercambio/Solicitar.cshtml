@@ -2,58 +2,49 @@
     ViewData["Title"] = "Solicitar intercambio";
 }
 
-<h1>Solicitar intercambio</h1>
+<div class="solicitar-intercambio mt-4">
+    <h1 class="mb-3">Solicitar intercambio</h1>
+    <p class="mb-4">
+        Elegí uno de tus libros para ofrecer a cambio del libro que te interesa.
+    </p>
 
-<p>Elegí un libro propio, para ofrecer a cambio del libro que te interesa</p>
+    <form asp-controller="Intercambio" asp-action="Solicitar" method="post">
+        <input type="hidden" name="LibroSolicitadoId" value="@ViewBag.LibroSolicitadoId" />
+        <div class="mb-4">
+            <label for="libroSolicitado" class="form-label">
+                Libro que querés recibir
+            </label>
 
-<div class="container mt-4" style="max-width: 650px;">
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-            <h2 class="card-title h4 mb-3">Solicitar intercambio</h2>
-            <p class="text-secondary mb-4">
-                Seleccioná uno de tus libros, para proponer el trueque por el libro que te interesa
-            </p>
-
-            <form asp-controller="Intercambio" asp-action="Solicitar" method="post">
-                
-                
-                <div class="mb-3">
-                    <label for="libroSolicitado" class="form-label fw-bold">Libro que queres recibir</label>
-                    <input id="libroSolicitado" type="text" class="form-control"
-                           placeholder="Elegí un libro del catálogo" disabled />
-               
-                </div>
-
-                
-
-
-                
-                <div class="mb-4">
-                    <label for="libroOfrecido" class="form-label fw-bold">Libro que entregás a cambio</label>
-                    
- 
-                    <select id="libroOfrecido" cla ss="form-select" disabled>
-                        <option selected disabled> Seleccioná uno de tus libros </option>
-                    </select>
-
-                    <div class="form-text text-secondary mt-1">
-                        No ves tus libros? Asegurate de haber publicado previamente, al menos un libro en tu
-                        biblioteca.
-                    </div>
-                </div>
-
-                
-                <div class="d-flex gap-2 pt-2">
-                    <button type="submit" class="btn btn-primary" disabled>
-                        Enviar propuesta
-                    </button>
-
-                    <a asp-controller="Intercambio" asp-action="Index" class="btn btn-outline-secondary">
-                        Cancelar
-                    </a>
-                </div>
-
-            </form>
+            <input id="libroSolicitado" type="text" class="form-control" value="@ViewBag.LibroSolicitadoTitulo"
+                   placeholder="Elegí un libro del catálogo" readonly />
         </div>
-    </div>
+
+        <div class="mb-4">
+            <label for="libroOfrecido" class="form-label">
+                Libro que ofrecés
+            </label>
+
+            <select id="libroOfrecido" class="form-select" aria-describedby="ayudaLibroOfrecido" disabled>
+                <option>Seleccioná uno de tus libros</option>
+            </select>
+
+            <p id="ayudaLibroOfrecido" class="mt-2">
+                Para ofrecer un libro, primero debe estar publicado
+                y disponible en tu biblioteca.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-3">
+
+
+
+            <button type="submit" class="boton boton-principal" disabled>
+                Enviar propuesta
+            </button>
+ 
+            <a asp-action="Index" class="enlace-volver">
+                Cancelar
+            </a>
+        </div>
+    </form>
 </div>

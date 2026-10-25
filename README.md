@@ -39,8 +39,64 @@ Debe aparecer el mensaje:
 Successfully saved ConnectionStrings:DefaultConnection to the secret store.
 ```
 
-### Paso 3: Ejecutar el proyecto
+### Paso 3: Generar y guardar la clave JWT
 
+La app va a usar una clave secreta para firmar y validar los tokens JWT de la API. Cada uno debe generar su propia clave local.
+
+```powershell
+$key = [Convert]::ToBase64String(([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))); dotnet user-secrets set "Jwt:Secret" "$key"
+
+```
+
+Si por cualquier motivo no te funcionó el paso a paso sería copiar las siguientes líneas una por una:
+
+```powershell
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+```
+```powershell
+$bytes = New-Object byte[] 64
+```
+```powershell
+$rng.GetBytes($bytes)
+```
+```powershell
+$key = [Convert]::ToBase64String($bytes)
+```
+```powershell
+$rng.Dispose()
+```
+Finalmente, guardar la clave en User Secrets:
+```powershell
+dotnet user-secrets set "Jwt:Key" $key
+```
+
+### Paso 4: Ejecutar el proyecto
+
+El proyecto incluye migraciones de EF dentro de la carpeta Migrations. Estas migraciones contienen la estructura de la base de datos definida en BookDbContext.
+
+Si la herramienta dotnet-ef no está instalada, hay que instalar la versión compatible con la versión de Entity Framework Core del proyecto:
+```powershell
+dotnet tool install --global dotnet-ef --version 9.0.0
+```
+Si ya está instalada, no es necesario repetir la instalación.
+```powershell
+dotnet ef database update --context BookDbContext
+```
+Una vez configurada la conexión y creada la base de datos vacía, ejecutar desde la carpeta del .csproj:
+```powershell
+dotnet ef database update --context BookDbContext
+```
+
+### Paso 5: Ejecutar el proyecto
+
+
+Primero, restaurar los paquetes y comprobar que el proyecto compile:
+```powershell
+dotnet restore
+```
+```powershell
+dotnet build
+```
 Desde la misma terminal, ejecutar en modo desarrollo:
 
 ```powershell
