@@ -10,14 +10,14 @@ namespace Bookmatch_SL.Controllers;
 [Authorize]
 public class LibroController : Controller
 {
-private readonly IRepoLibro repoLibro;
-private readonly IRepoCategoria repoCategoria;
+    private readonly IRepoLibro repoLibro;
+    private readonly IRepoCategoria repoCategoria;
 
-public LibroController(IRepoLibro repoLibro, IRepoCategoria repoCategoria)
-{
-    this.repoLibro = repoLibro;
-    this.repoCategoria = repoCategoria;
-}
+    public LibroController(IRepoLibro repoLibro, IRepoCategoria repoCategoria)
+    {
+        this.repoLibro = repoLibro;
+        this.repoCategoria = repoCategoria;
+    }
 
     [AllowAnonymous]
     public IActionResult Index(int pagina = 1)
