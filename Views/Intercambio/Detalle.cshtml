@@ -1,7 +1,14 @@
 @model Bookmatch_SL.Models.Intercambio
+@using System.Security.Claims
+@using Bookmatch_SL.Models.Enums
 
 @{
     ViewData["Title"] = "Detalle del intercambio";
+    string? identificadorUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    bool esUsuarioOrigen = identificadorUsuario == Model.UsuarioOrigenId.ToString();
+    bool esUsuarioDestino = identificadorUsuario == Model.UsuarioDestinoId.ToString();
+    bool esParticipante = esUsuarioOrigen || esUsuarioDestino;
 }
 
 <div class="detalle-intercambio mt-4">
@@ -35,7 +42,150 @@
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
     </dl>
 
-    <a asp-action="Index" asp-route-pagina="@ViewBag.PaginaActual" class="boton boton-secundario"">
+    @if (TempData["Exito"] != null)
+    {
+        <p role="status">@TempData["Exito"]</p>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <p class="text-danger" role="alert">@TempData["Error"]</p>
+    }
+
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        @if (Model.PuedeCambiarA(EstadoIntercambio.Aceptado) && esUsuarioDestino)
+        {
+            <button type="button" class="boton boton-principal" data-bs-toggle="modal"
+                    data-bs-target="#confirmarAceptacion">
+                Aceptar intercambio
+            </button>
+        }
+
+        @if (Model.PuedeCambiarA(EstadoIntercambio.Rechazado) && esUsuarioDestino)
+        {
+            <button type="button" class="boton boton-secundario" data-bs-toggle="modal" data-bs-target="#confirmarRechazo">
+                Rechazar propuesta
+            </button>
+        }
+
+        @if (Model.PuedeCambiarA(EstadoIntercambio.Exitoso) && esParticipante)
+        {
+            <button type="button" class="boton boton-principal" data-bs-toggle="modal"
+                    data-bs-target="#confirmarFinalizacion">
+                Finalizar intercambio
+            </button>
+        }
+
+        @if (Model.PuedeCambiarA(EstadoIntercambio.Cancelado) && esParticipante)
+        {
+            <button type="button" class="boton boton-secundario" data-bs-toggle="modal"
+                    data-bs-target="#confirmarCancelacion">
+                Cancelar intercambio
+            </button>
+        }
+    </div>
+
+    @if (Model.PuedeCambiarA(EstadoIntercambio.Aceptado) && esUsuarioDestino)
+    {
+        <div class="modal fade" id="confirmarAceptacion" tabindex="-1" aria-labelledby="tituloAceptacion"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-confirmacion">
+                    <h2 id="tituloAceptacion" class="h5 mb-4">
+                        ¿Desea aceptar este intercambio?
+                    </h2>
+
+                    <form asp-action="Aceptar" method="post" class="d-flex gap-3">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="boton boton-principal">
+                            Sí
+                        </button>
+                        <button type="button" class="boton boton-secundario" data-bs-dismiss="modal">
+                            No
+                        </button>
+ 
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.PuedeCambiarA(EstadoIntercambio.Rechazado) && esUsuarioDestino)
+    {
+        <div class="modal fade" id="confirmarRechazo" tabindex="-1" aria-labelledby="tituloRechazo" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-confirmacion">
+                    <h2 id="tituloRechazo" class="h5 mb-4">
+                        ¿Desea rechazar esta propuesta?
+                    </h2>
+
+                    <form asp-action="Rechazar" method="post" class="d-flex gap-3">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="boton boton-principal">
+                            Sí
+                        </button>
+                        <button type="button" class="boton boton-secundario" data-bs-dismiss="modal">
+                            No
+                        </button>
+ 
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.PuedeCambiarA(EstadoIntercambio.Exitoso) && esParticipante)
+    {
+        <div class="modal fade" id="confirmarFinalizacion" tabindex="-1" aria-labelledby="tituloFinalizacion"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-confirmacion">
+                    <h2 id="tituloFinalizacion" class="h5 mb-4">
+                        ¿Se concretó el intercambio de libros?
+                    </h2>
+
+                    <form asp-action="MarcarExitoso" method="post" class="d-flex gap-3">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="boton boton-principal">
+                            Sí
+                        </button>
+                        <button type="button" class="boton boton-secundario" data-bs-dismiss="modal">
+                            No
+                        </button>
+ 
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.PuedeCambiarA(EstadoIntercambio.Cancelado) && esParticipante)
+    {
+        <div class="modal fade" id="confirmarCancelacion" tabindex="-1" aria-labelledby="tituloCancelacion"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-confirmacion">
+                    <h2 id="tituloCancelacion" class="h5 mb-4">
+                        ¿Desea cancelar este intercambio?
+                    </h2>
+
+                    <form asp-action="Cancelar" method="post" class="d-flex gap-3">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="boton boton-principal">
+                            Sí
+                        </button>
+                        <button type="button" class="boton boton-secundario" data-bs-dismiss="modal">
+                            No
+                        </button>
+
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    <a asp-action="Index" asp-route-pagina="@ViewBag.PaginaActual" class="boton boton-secundario">
         Regresar al listado
     </a>
 </div>

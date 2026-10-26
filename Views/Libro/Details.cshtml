@@ -1,4 +1,6 @@
 @model Bookmatch_SL.Models.Libro
+@using System.Security.Claims
+
 
 @{
     ViewData["Title"] = "Detalle del Libro";
@@ -24,13 +26,19 @@
                 <p><strong>Aclaración:</strong> @Model.Aclaracion</p>
             }
 
-            <div class="mt-4">
-                <!-- Botón que conecta con la vista interc-->
-                <a asp-controller="Intercambio" asp-action="Solicitar" asp-route-id="@Model.Id" class="btn btn-success">
-                    Solicitar bookmatch
-                </a>
-                <a asp-action="Index" class="btn btn-secondary">Volver al catálogo</a>
+
+            <div class="mt-4 d-flex flex-wrap gap-3">
+                @if (Model.Activo && Model.Disponible &&
+     User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.UsuarioId.ToString() )
+                {
+                    <a asp-controller="Intercambio" asp-action="Solicitar" asp-route-id="@Model.Id"
+                       class="boton boton-principal">
+                        Solicitar BookMatch </a>
+                    }
+
+                    <a asp-action="Index" class="boton boton-secundario">
+                        Volver al catálogo </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>

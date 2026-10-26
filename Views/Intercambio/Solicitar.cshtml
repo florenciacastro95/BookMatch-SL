@@ -9,36 +9,44 @@
     </p>
 
     <form asp-controller="Intercambio" asp-action="Solicitar" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"> </div>
         <input type="hidden" name="LibroSolicitadoId" value="@ViewBag.LibroSolicitadoId" />
+            
         <div class="mb-4">
-            <label for="libroSolicitado" class="form-label">
-                Libro que querés recibir
-            </label>
-
-            <input id="libroSolicitado" type="text" class="form-control" value="@ViewBag.LibroSolicitadoTitulo"
-                   placeholder="Elegí un libro del catálogo" readonly />
+         
+            <p class="mb-1">Libro que querés recibir</p>
+            <p>@ViewBag.LibroSolicitadoTitulo</p>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-3">
             <label for="libroOfrecido" class="form-label">
-                Libro que ofrecés
+                Libro para intercambiar
             </label>
+            <select id="libroOfrecido" name="LibroOfrecidoId" class="form-select" aria-describedby="ayudaLibroOfrecido"
+                    required>
+                <option value="">Seleccioná uno de tus libros</option>
 
-            <select id="libroOfrecido" class="form-select" aria-describedby="ayudaLibroOfrecido" disabled>
-                <option>Seleccioná uno de tus libros</option>
+                @foreach (Bookmatch_SL.Models.Libro libro in ViewBag.LibrosParaOfrecer)
+                {
+                    <option value="@libro.Id">@libro.Titulo</option>
+                }
             </select>
-
-            <p id="ayudaLibroOfrecido" class="mt-2">
-                Para ofrecer un libro, primero debe estar publicado
-                y disponible en tu biblioteca.
-            </p>
+            @if (ViewBag.LibrosParaOfrecer.Count == 0)
+            {
+                <p id="ayudaLibroOfrecido" class="mt-2">
+                    No tenés libros disponibles para ofrecer.
+                    <a asp-controller="Libro" asp-action="Create">
+                        Publicá un libro
+                    </a>
+                    para comenzar.
+                </p>
+            }
         </div>
+
+
 
         <div class="d-flex flex-wrap align-items-center gap-3">
-
-
-
-            <button type="submit" class="boton boton-principal" disabled>
+            <button type="submit" class="boton boton-principal">
                 Enviar propuesta
             </button>
  

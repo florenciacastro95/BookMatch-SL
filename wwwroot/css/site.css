@@ -121,6 +121,14 @@ body {
 }
 
 
+/*---- modales, botones de confirmacion---- */
+/* ----- modales ----- */
+.modal-confirmacion {
+    padding: 1.5rem;
+    border-radius: 0;
+}
+
+
 /** fuente -- 
 Andika en body, titulos Josefin Sans------------- */
 
@@ -150,3 +158,40 @@ textarea,
 .boton {
     font-family: inherit;
 }
+
+/** -------- encabezado azul - propuesta 1 --- **/
+.encabezado-bookmatch {
+    background-color: #2A374D;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.encabezado-bookmatch .navbar-brand,
+.encabezado-bookmatch .nav-link,
+.encabezado-bookmatch .navbar-text {
+    color: #FFFFFF;
+}
+
+.encabezado-bookmatch .navbar-brand:hover,
+.encabezado-bookmatch .nav-link:hover {
+    color: #D6C5B1;
+}
+
+.encabezado-bookmatch .navbar-brand img {
+    object-fit: contain;
+    border-radius: 20%;    /* borde de icono levemente redondeado */
+  
+}
+
+.encabezado-bookmatch .btn {
+    color: #FFFFFF;
+    background-color: transparent;
+    border: 1px solid #FFFFFF;
+    border-radius: 0;
+}
+
+.encabezado-bookmatch .btn:hover {
+    color: #2A374D;
+    background-color: #FFFFFF;
+}
+

@@ -5,6 +5,7 @@
 .vscode/
 .idea/
 Aignorar/
+bin/
 
 *.user
 *.suo

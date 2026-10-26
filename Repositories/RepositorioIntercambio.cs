@@ -147,6 +147,8 @@ public class RepositorioIntercambio : IRepoIntercambio
     public IList<Intercambio> ObtenerPorUsuario(int usuarioId)
     {
         return contexto_bd.Intercambios
+            .Include(intercambio => intercambio.LibroOfrecido)
+            .Include(intercambio => intercambio.LibroSolicitado)
             .Where(intercambio =>
                 intercambio.Activo &&
                 (intercambio.UsuarioOrigenId == usuarioId ||
