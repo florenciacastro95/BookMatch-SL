@@ -1,36 +1,97 @@
 @model Bookmatch_SL.Models.Libro
-
 @{
-    ViewData["Title"] = "Detalle del Libro";
+    string? idUsuarioActual =
+        User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+    bool esPropietario =
+        Model.UsuarioId.ToString() == idUsuarioActual;
+
+    bool esAdministrador = User.IsInRole("Administrador");
 }
 
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-4">
-            <img src="@Model.PortadaUrl" class="img-fluid rounded" alt="Portada del libro">
-        </div>
-        <div class="col-md-8">
-            <h2>@Model.Titulo</h2>
-            <hr />
-            <p><strong>Autor:</strong> @Model.Autor</p>
-            <p><strong>Editorial:</strong> @Model.Editorial</p>
-            <p><strong>Idioma:</strong> @Model.Idioma</p>
-            <p><strong>Formato:</strong> @Model.Formato</p>
-            <p><strong>Categoría:</strong> @Model.Categoria?.Nombre</p>
-            <p><strong>Estado de Conservación:</strong> @Model.EstadoConservacion</p>
-            <p><strong>Propietario:</strong> @Model.Usuario?.Nombre</p>
-            @if (!string.IsNullOrEmpty(Model.Aclaracion))
+            @if (!string.IsNullOrWhiteSpace(Model.PortadaUrl))
             {
-                <p><strong>Aclaración:</strong> @Model.Aclaracion</p>
+                <img src="@Model.PortadaUrl"
+                     class="img-fluid rounded"
+                     alt="Portada de @Model.Titulo" />
             }
+        </div>
 
-            <div class="mt-4">
-                <!-- Botón que conecta con la vista interc-->
-                <a asp-controller="Intercambio" asp-action="Solicitar" asp-route-id="@Model.Id" class="btn btn-success">
-                    Solicitar bookmatch
-                </a>
-                <a asp-action="Index" class="btn btn-secondary">Volver al catálogo</a>
-            </div>
+        <div class="col-md-8">
+            <h1>@Model.Titulo</h1>
+
+            <p>
+                <strong>Autor:</strong> @Model.Autor
+            </p>
+
+            <p>
+                <strong>Editorial:</strong> @Model.Editorial
+            </p>
+
+            <p>
+                <strong>Idioma:</strong> @Model.Idioma
+            </p>
+
+            <p>
+                <strong>Formato:</strong> @Model.Formato
+            </p>
+
+            <p>
+                <strong>Estado de conservación:</strong>
+                @Model.EstadoConservacion
+            </p>
+
+            <p>
+                <strong>Categoría:</strong>
+                @Model.Categoria?.Nombre
+            </p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Aclaracion))
+            {
+                <p>
+                    <strong>Aclaración:</strong>
+                    @Model.Aclaracion
+                </p>
+            }
         </div>
     </div>
+</div>
+
+<div class="mt-4">
+    @if (User.Identity?.IsAuthenticated == true &&
+         (esPropietario || esAdministrador))
+    {
+        <a asp-controller="Libro"
+           asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Editar libro
+        </a>
+    }
+
+    @if (Model.Disponible && !esPropietario &&
+         User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-controller="Intercambio"
+           asp-action="Solicitar"
+           asp-route-id="@Model.Id"
+           class="btn btn-success">
+            Solicitar bookmatch
+        </a>
+    }
+    else if (Model.Disponible && User.Identity?.IsAuthenticated != true)
+    {
+        <a asp-controller="Auth"
+           asp-action="Login"
+           class="btn btn-outline-primary">
+            Ingresá para solicitar un intercambio
+        </a>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Volver al catálogo
+    </a>
 </div>

@@ -27,7 +27,7 @@ builder.Services.AddScoped<IRepoUsuarios, RepositorioUsuario>();
 
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddScoped<ServicioAvatar>();
-
+builder.Services.AddScoped<ServicioPortada>();
 
 string conexionBaseDatos = builder.Configuration
     .GetConnectionString("DefaultConnection")

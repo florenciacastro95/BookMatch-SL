@@ -40,9 +40,11 @@ public class AuthApiController : ControllerBase
         var usuario = repoUsuarios.ObtenerPorEmail(modelo.Email);
 
         if (usuario == null ||
-            !usuario.Activo ||
-            string.IsNullOrWhiteSpace(usuario.PasswordHash))
+    !usuario.Activo ||
+    string.IsNullOrWhiteSpace(usuario.PasswordHash))
         {
+            RegistrarIntentoApiFallido(usuario?.Id);
+
             return Unauthorized(new
             {
                 mensaje = "El email o la contraseña son incorrectos."
@@ -56,6 +58,8 @@ public class AuthApiController : ControllerBase
 
         if (resultado == PasswordVerificationResult.Failed)
         {
+            RegistrarIntentoApiFallido(usuario.Id);
+
             return Unauthorized(new
             {
                 mensaje = "El email o la contraseña son incorrectos."
@@ -111,5 +115,19 @@ public class AuthApiController : ControllerBase
             tokenType = "Bearer",
             expiresAtUtc = expira
         });
+    }
+
+    private void RegistrarIntentoApiFallido(int? idUsuario)
+    {
+        contexto.Auditorias.Add(new Auditoria
+        {
+            IdUsuario = idUsuario,
+            Accion = "INICIO_SESION_API_RECHAZADO",
+            Entidad = "Usuario",
+            IdEntidad = idUsuario,
+            FechaHora = DateTime.UtcNow
+        });
+
+        contexto.SaveChanges();
     }
 }

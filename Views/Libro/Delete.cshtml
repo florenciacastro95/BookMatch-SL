@@ -16,7 +16,7 @@
         <p><strong>Editorial:</strong> @Model.Editorial</p>
     </div>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
         <input type="hidden" asp-for="Id" />
         <button type="submit" class="btn btn-danger">Sí, eliminar</button>
         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
