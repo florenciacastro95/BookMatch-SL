@@ -136,11 +136,12 @@ public class AuthController : Controller
         var usuario = repoUsuarios.ObtenerPorEmail(modelo.Email);
 
         if (usuario == null ||
-            !usuario.Activo ||
-            string.IsNullOrWhiteSpace(usuario.PasswordHash))
+    !usuario.Activo ||
+    string.IsNullOrWhiteSpace(usuario.PasswordHash))
         {
-            if (usuario != null)
-                RegistrarEventoAcceso(usuario.Id, "INICIO_SESION_RECHAZADO");
+            RegistrarEventoAcceso(
+                usuario?.Id,
+                "INICIO_SESION_RECHAZADO");
 
             ModelState.AddModelError(
                 string.Empty,
@@ -376,8 +377,7 @@ public class AuthController : Controller
             usuario.Id,
             nuevoHash);
 
-        if (resultadoActualizacion == 0 &&
-            usuario.PasswordHash != nuevoHash)
+       if (resultadoActualizacion == 0)
         {
             ModelState.AddModelError(
                 string.Empty,
@@ -407,7 +407,7 @@ public class AuthController : Controller
             : null;
     }
 
-    private void RegistrarEventoAcceso(int idUsuario, string accion)
+    private void RegistrarEventoAcceso(int? idUsuario, string accion)
     {
         contexto.Auditorias.Add(new Auditoria
         {

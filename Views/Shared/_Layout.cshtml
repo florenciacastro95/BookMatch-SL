@@ -10,11 +10,8 @@
     <script type="importmap"></script>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
     <link rel="stylesheet" href="~/Bookmatch_SL.styles.css" asp-append-version="true" />
-
     <link rel="icon" type="image/x-icon" href="~/bookmatch.ico" />
 
     <link
@@ -24,19 +21,12 @@
 
 <body>
     <header>
-        @* <nav  class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-3"> *@
         <nav class="navbar navbar-expand-lg encabezado-bookmatch mb-3" data-bs-theme="dark">
             <div class="container-fluid">
-
-                @* <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    Bookmatch-SL
-                </a> ---- PROPUESTA ENCABEZADO AZUL *@
-                
                 <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
                     <img src="~/bookmatch.ico" alt="" width="40" height="40" />
                     <span>BookMatch-SL</span>
                 </a>
-
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBookmatch"
                         aria-controls="navbarBookmatch" aria-expanded="false" aria-label="Abrir navegación">
@@ -45,7 +35,6 @@
 
                 <div class="collapse navbar-collapse" id="navbarBookmatch">
                     <ul class="navbar-nav me-auto">
-
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">
                                 Inicio
@@ -58,10 +47,13 @@
                             </a>
                         </li>
 
-                   
-
                         @if (User.Identity?.IsAuthenticated == true)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Libro" asp-action="MiBiblioteca">
+                                    Mi biblioteca
+                                </a>
+                            </li>
 
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Intercambio" asp-action="Index">
@@ -74,7 +66,7 @@
                                     Mi perfil
                                 </a>
                             </li>
-                             
+
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Auth" asp-action="CambiarPassword">
                                     Cambiar contraseña
@@ -99,7 +91,6 @@
                     </ul>
 
                     <div class="d-flex align-items-center gap-2">
-
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <span class="navbar-text">
@@ -107,7 +98,6 @@
                             </span>
 
                             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-
                                 @Html.AntiForgeryToken()
 
                                 <button type="submit" class="btn btn-outline-secondary">

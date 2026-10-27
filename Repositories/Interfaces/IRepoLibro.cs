@@ -13,6 +13,4 @@ public interface IRepoLibro : IRepositorio<Libro>
     IList<Libro> ObtenerPorUsuario(int usuarioId);
 
     IList<Libro> ObtenerDisponibles();
-
-
 }

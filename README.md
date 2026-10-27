@@ -44,7 +44,7 @@ Successfully saved ConnectionStrings:DefaultConnection to the secret store.
 La app va a usar una clave secreta para firmar y validar los tokens JWT de la API. Cada uno debe generar su propia clave local.
 
 ```powershell
-$key = [Convert]::ToBase64String(([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))); dotnet user-secrets set "Jwt:Secret" "$key"
+$key = [Convert]::ToBase64String(([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))); dotnet user-secrets set "Jwt:Key" $key
 
 ```
 

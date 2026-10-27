@@ -430,7 +430,12 @@ public class BookDbContext : DbContext
         {
             return "BAJA_LOGICA";
         }
-
+        if (entrada.Entity is Libro &&
+            entrada.State == EntityState.Modified &&
+            entrada.Property(nameof(Libro.Disponible)).IsModified)
+        {
+            return "CAMBIO_DISPONIBILIDAD";
+        }
         if (entrada.Entity is Intercambio &&
             entrada.State == EntityState.Modified &&
             entrada.Property(nameof(Intercambio.Estado)).IsModified)

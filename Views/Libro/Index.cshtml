@@ -1,30 +1,127 @@
+
 @model IEnumerable<Bookmatch_SL.Models.Libro>
 
 @{
     ViewData["Title"] = "Catálogo de Libros";
+
+    int paginaActual = ViewBag.PaginaActual;
+    int totalPaginas = ViewBag.TotalPaginas;
+
+    string? idUsuarioActual =
+        User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 }
 
 <div class="container mt-4">
     <h2>Catálogo de libros para match</h2>
+
     <p>
-        <a asp-action="Create" class="btn btn-primary">Publicar nuevo libro</a>
+        Libros activos y disponibles para trueque.
     </p>
 
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-primary">
+                Publicar nuevo libro
+            </a>
+
+            <a asp-action="MiBiblioteca" class="btn btn-outline-primary">
+                Mi biblioteca
+            </a>
+        </p>
+    }
+
     <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <p>No hay libros disponibles para mostrar en esta página.</p>
+            </div>
+        }
+
         @foreach (var item in Model)
         {
             <div class="col-md-4 mb-3">
                 <div class="card h-100">
-                    <img src="@item.PortadaUrl" class="card-img-top" alt="Portada" style="height: 250px; object-fit: cover;">
+                    <img src="@item.PortadaUrl"
+                         class="card-img-top"
+                         alt="Portada de @item.Titulo"
+                         style="height: 250px; object-fit: cover;" />
+
                     <div class="card-body">
                         <h5 class="card-title">@item.Titulo</h5>
-                        <p class="card-text"><strong>Autor:</strong> @item.Autor</p>
-                        <p class="card-text"><strong>Categoría:</strong> @item.Categoria?.Nombre</p>
-                        <p class="card-text"><strong>Estado:</strong> @item.EstadoConservacion</p>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Ver detalles</a>
+
+                        <p class="card-text">
+                            <strong>Autor:</strong> @item.Autor
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Categoría:</strong> @item.Categoria?.Nombre
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Estado:</strong> @item.EstadoConservacion
+                        </p>
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.Id"
+                           class="btn btn-secondary btn-sm">
+                            Ver detalles
+                        </a>
+
+                        @if (item.UsuarioId.ToString() == idUsuarioActual ||
+                             User.IsInRole("Administrador"))
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-primary btn-sm">
+                                Editar
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
         }
     </div>
+
+    @if (totalPaginas > 1)
+    {
+        <nav aria-label="Paginación del catálogo">
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pagina="@(paginaActual - 1)">
+                        Anterior
+                    </a>
+                </li>
+
+                @for (int pagina = 1; pagina <= totalPaginas; pagina++)
+                {
+                    <li class="page-item @(pagina == paginaActual ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-pagina="@pagina">
+                            @pagina
+                        </a>
+                    </li>
+                }
+
+                <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pagina="@(paginaActual + 1)">
+                        Siguiente
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    }
+
+    <p class="text-muted text-center">
+        Página @paginaActual de @totalPaginas
+        · @ViewBag.TotalRegistros libros disponibles
+    </p>
 </div>
