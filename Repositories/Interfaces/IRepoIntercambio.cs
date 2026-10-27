@@ -5,7 +5,8 @@ namespace Bookmatch_SL.Repositories.Interfaces;
 
 public interface IRepoIntercambio : IRepositorio<Intercambio>
 {
-    IList<Intercambio> ObtenerPorUsuario(int usuarioId);
+    IList<Intercambio> ObtenerPorUsuario(int usuarioId, int nroPagina = 1, int tamPagina = 10);
+    int ObtenerCantidadPorUsuario(int usuarioId);
 
     IList<Intercambio> ObtenerPorEstado(EstadoIntercambio estado);
     int Rechazar(int idIntercambio, int idUsuarioAutenticado);
@@ -15,4 +16,5 @@ public interface IRepoIntercambio : IRepositorio<Intercambio>
     IList<Intercambio> ObtenerEnviados(int usuarioId);
     IList<Intercambio> ObtenerRecibidos(int usuarioId);
 
+    bool ExistePropuestaPendiente(int usuarioOrigenId, int usuarioDestinoId, int libroOfrecidoId, int libroSolicitadoId);
 }
