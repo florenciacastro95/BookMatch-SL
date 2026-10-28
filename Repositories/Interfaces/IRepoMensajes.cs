@@ -5,4 +5,6 @@ namespace Bookmatch_SL.Repositories.Interfaces;
 public interface IRepoMensajes : IRepositorio<Mensaje>
 {
     IList<Mensaje> ObtenerPorIntercambio(int intercambioId);
+
+    bool PermiteMensajes(Intercambio intercambio);
 }
