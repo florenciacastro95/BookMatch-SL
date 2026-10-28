@@ -23,6 +23,7 @@ builder.Services.AddScoped<IRepoIntercambio, RepositorioIntercambio>();
 builder.Services.AddScoped<IRepoLibro, RepositorioLibro>();
 builder.Services.AddScoped<IRepoCategoria, RepositorioCategoria>();
 builder.Services.AddScoped<IRepoUsuarios, RepositorioUsuario>();
+builder.Services.AddScoped<IRepoMensajes, RepositorioMensajes>();
 
 
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
