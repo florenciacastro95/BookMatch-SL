@@ -1,0 +1,68 @@
+@model Bookmatch_SL.Models.Intercambio
+@using System.Security.Claims
+
+@*
+    Vista parcial con el chat del intercambio. Se dibuja dentro de Detalle.cshtml.
+    La separé en su propio archivo para no mezclarla con los botones de estado.
+*@
+
+@{
+    var mensajes = ViewBag.Mensajes as IList<Bookmatch_SL.Models.Mensaje>
+        ?? new List<Bookmatch_SL.Models.Mensaje>();
+
+    bool puedeEscribir = ViewBag.PuedeEscribir == true;
+    string? identificadorUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<section class="mensajes-intercambio mb-4">
+    <h2 class="h4 mb-3">Mensajes</h2>
+
+    <div class="border rounded p-3 mb-3" style="max-height: 400px; overflow-y: auto;">
+        @if (mensajes.Count == 0)
+        {
+            <p class="mb-0">Todavía no hay mensajes. Escribí el primero para coordinar el intercambio.</p>
+        }
+        else
+        {
+            foreach (var mensaje in mensajes)
+            {
+                // si el mensaje es mío lo muestro a la derecha, si es del otro a la izquierda
+                bool esMio = mensaje.UsuarioEmisorId.ToString() == identificadorUsuario;
+
+                <div class="d-flex mb-2 @(esMio ? "justify-content-end" : "justify-content-start")">
+                    <div class="border rounded px-3 py-2 @(esMio ? "bg-light" : "")" style="max-width: 75%;">
+                        <small class="d-block fw-bold">
+                            @(esMio ? "Vos" : mensaje.UsuarioEmisor.Nombre)
+                        </small>
+                        @* Razor escapa el texto solo, así si alguien escribe código HTML no se ejecuta *@
+                        <span style="white-space: pre-line;">@mensaje.Contenido</span>
+                        <small class="d-block text-end">
+                            @mensaje.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                        </small>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    @if (puedeEscribir)
+    {
+        <form asp-controller="Mensaje" asp-action="Enviar" method="post">
+            <input type="hidden" name="intercambioId" value="@Model.Id" />
+
+            <div class="mb-2">
+                <label for="contenidoMensaje" class="form-label">Escribí un mensaje</label>
+                <textarea id="contenidoMensaje" name="contenido" class="form-control" rows="2"
+                          maxlength="500" required></textarea>
+            </div>
+
+            <button type="submit" class="boton boton-principal">
+                Enviar mensaje
+            </button>
+        </form>
+    }
+    else
+    {
+        <p>El intercambio ya terminó, por eso el chat está cerrado.</p>
+    }
+</section>

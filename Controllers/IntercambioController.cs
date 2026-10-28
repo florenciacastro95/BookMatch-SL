@@ -10,11 +10,13 @@ public class IntercambioController : Controller
 {
     private readonly IRepoIntercambio repositorioIntercambio;
     private readonly IRepoLibro repositorioLibro;
+    private readonly IRepoMensajes repositorioMensajes;
 
-    public IntercambioController(IRepoIntercambio repositorioIntercambio, IRepoLibro repositorioLibro)
+    public IntercambioController(IRepoIntercambio repositorioIntercambio, IRepoLibro repositorioLibro, IRepoMensajes repositorioMensajes)
     {
         this.repositorioIntercambio = repositorioIntercambio;
         this.repositorioLibro = repositorioLibro;
+        this.repositorioMensajes = repositorioMensajes;
     }
 
 
@@ -88,6 +90,11 @@ public class IntercambioController : Controller
         }
 
         ViewBag.PaginaActual = pagina;
+
+        // mensajes del chat de este intercambio, los muestra la vista parcial _Mensajes
+        ViewBag.Mensajes = repositorioMensajes.ObtenerPorIntercambio(intercambioEncontrado.Id);
+        ViewBag.PuedeEscribir = repositorioMensajes.PermiteMensajes(intercambioEncontrado);
+
         return View(intercambioEncontrado);
     }
 
