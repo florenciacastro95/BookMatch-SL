@@ -150,33 +150,33 @@ INSERT INTO `libro` VALUES (1,2,2,'Asesinato en el Orient Express','Agatha Chris
 UNLOCK TABLES;
 
 --
--- Table structure for table `mensajes`
+-- Table structure for table `mensaje`
 --
 
-DROP TABLE IF EXISTS `mensajes`;
+DROP TABLE IF EXISTS `mensaje`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `mensajes` (
+CREATE TABLE `mensaje` (
   `id` int NOT NULL AUTO_INCREMENT,
   `intercambio_id` int NOT NULL,
   `usuario_emisor_id` int NOT NULL,
   `contenido` text NOT NULL,
   `fecha_hora` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `fk_mensajes_intercambio` (`intercambio_id`),
-  KEY `fk_mensajes_usuario_emisor` (`usuario_emisor_id`),
-  CONSTRAINT `fk_mensajes_intercambio` FOREIGN KEY (`intercambio_id`) REFERENCES `intercambio` (`id`),
-  CONSTRAINT `fk_mensajes_usuario_emisor` FOREIGN KEY (`usuario_emisor_id`) REFERENCES `usuario` (`id`)
+  KEY `fk_mensaje_intercambio` (`intercambio_id`),
+  KEY `fk_mensaje_usuario_emisor` (`usuario_emisor_id`),
+  CONSTRAINT `fk_mensaje_intercambio` FOREIGN KEY (`intercambio_id`) REFERENCES `intercambio` (`id`),
+  CONSTRAINT `fk_mensaje_usuario_emisor` FOREIGN KEY (`usuario_emisor_id`) REFERENCES `usuario` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `mensajes`
+-- Dumping data for table `mensaje`
 --
 
-LOCK TABLES `mensajes` WRITE;
-/*!40000 ALTER TABLE `mensajes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mensajes` ENABLE KEYS */;
+LOCK TABLES `mensaje` WRITE;
+/*!40000 ALTER TABLE `mensaje` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mensaje` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
