@@ -23,27 +23,9 @@ public class ChatIntercambioHub : Hub<IClienteChatIntercambio>
     }
 
 
-    // cada intercambio es una "sala" (un grupo de SignalR).
-    // Así el mensaje le llega solo a los dos usuarios de ese intercambio y no a todos.
-    public async Task UnirseAlChat(int intercambioId)
-    {
-        int idUsuarioAutenticado = ObtenerIdUsuarioAutenticado();
-
-        var intercambioEncontrado = repositorioIntercambio.ObtenerPorId(intercambioId);
-
-        if (intercambioEncontrado == null || !EsParticipante(intercambioEncontrado, idUsuarioAutenticado))
-        {
-            await Clients.Caller.RecibirError("No participás de este intercambio");
-            return;
-        }
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, NombreDelGrupo(intercambioId));
-    }
-
-
     // lo llama el JavaScript cuando el usuario aprieta "Enviar mensaje".
     // Primero se guarda en la base (el hub no guarda nada, se crea y se destruye
-    // en cada llamada) y recién después se reenvía a la sala.
+    // en cada llamada) y recién después se le reenvía a los dos usuarios.
     public async Task EnviarMensaje(MensajeEnviadoDto mensajeEnviado)
     {
         int idUsuarioAutenticado = ObtenerIdUsuarioAutenticado();
@@ -103,10 +85,15 @@ public class ChatIntercambioHub : Hub<IClienteChatIntercambio>
         mensajeParaElChat.Contenido = mensajeGuardado.Contenido;
         mensajeParaElChat.FechaHoraTexto = mensajeGuardado.FechaHora.ToString("dd/MM/yyyy HH:mm");
 
-        // se lo mando a toda la sala, incluido el que escribió,
-        // así a los dos les aparece igual
-        await Clients.Group(NombreDelGrupo(mensajeEnviado.IntercambioId))
-            .RecibirMensaje(mensajeParaElChat);
+        // igual que el mensaje privado del ChatSeguroHub del profe:
+        // se lo mando al otro usuario del intercambio y también al que escribió (Caller).
+        // Clients.User busca por el claim NameIdentifier, que en nuestra cookie es el id del usuario
+        int idOtroUsuario = intercambioEncontrado.UsuarioOrigenId == idUsuarioAutenticado
+            ? intercambioEncontrado.UsuarioDestinoId
+            : intercambioEncontrado.UsuarioOrigenId;
+
+        await Clients.User(idOtroUsuario.ToString()).RecibirMensaje(mensajeParaElChat);
+        await Clients.Caller.RecibirMensaje(mensajeParaElChat);
     }
 
 
@@ -129,10 +116,5 @@ public class ChatIntercambioHub : Hub<IClienteChatIntercambio>
         bool esUsuarioDestino = intercambio.UsuarioDestinoId == idUsuarioAutenticado;
 
         return esUsuarioOrigen || esUsuarioDestino;
-    }
-
-    private static string NombreDelGrupo(int intercambioId)
-    {
-        return "intercambio-" + intercambioId;
     }
 }
