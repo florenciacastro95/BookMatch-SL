@@ -93,6 +93,26 @@ public class IntercambioController : Controller
 
 
     [HttpGet]
+    public IActionResult BuscarLibrosParaOfrecer(string texto = "")
+    {
+        string? identificadorUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(identificadorUsuario, out int idUsuarioAutenticado))
+        {
+            return Challenge();
+        }
+
+        var librosEncontrados = repositorioLibro.BuscarPropiosDisponibles(idUsuarioAutenticado, texto);
+        var resultados = librosEncontrados.Select(libro => new
+        {
+            id = libro.Id,
+            titulo = libro.Titulo,
+            autor = libro.Autor
+        });
+        return Json(resultados);
+    }
+
+
+    [HttpGet]
     public IActionResult Solicitar(int id)
     {
         string? identificadorUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -167,7 +187,7 @@ public class IntercambioController : Controller
         {
             ModelState.AddModelError(
                 "",
-                "Debés ofrecer un libro propio y solicitar uno de otro usuario"
+                "Para proponer un intercambio, debés ofrecer un libro propio y solicitar uno de otro usuario"
             );
         }
         else if (repositorioIntercambio.ExistePropuestaPendiente(

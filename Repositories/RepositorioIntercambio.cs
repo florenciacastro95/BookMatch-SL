@@ -135,7 +135,7 @@ public class RepositorioIntercambio : IRepoIntercambio
 
         if (tamPagina < 1)
         {
-            tamPagina = 10;
+            tamPagina = 5;
         }
         // ej pag 2 con 10 registro, se omiten los primeros 10 y devuelve los sig 10
         // (2 -1 ) * 10 = 10 sig
@@ -143,7 +143,7 @@ public class RepositorioIntercambio : IRepoIntercambio
 
         return contexto_bd.Intercambios
             .Include(intercambio => intercambio.LibroOfrecido)
-.Include(intercambio => intercambio.LibroSolicitado)
+            .Include(intercambio => intercambio.LibroSolicitado)
             .Where(intercambio => intercambio.Activo)
             .OrderBy(intercambio => intercambio.Id)
             .Skip(cantidadAOmitir)
@@ -158,6 +158,9 @@ public class RepositorioIntercambio : IRepoIntercambio
         return contexto_bd.Intercambios
             .Count(intercambio => intercambio.Activo);
     }
+
+
+
     // permisivo pra devovler nill o el intercam x id
     public Intercambio? ObtenerPorId(int idIntercambio)
     {
@@ -169,34 +172,34 @@ public class RepositorioIntercambio : IRepoIntercambio
     }
 
     // - intermbios activos donde el user participa como origen o destino
-
     public IList<Intercambio> ObtenerPorUsuario(
         int usuarioId,
         int nroPagina = 1,
-        int tamPagina = 10)
+        int tamPagina = 5)
     {
-        if (nroPagina < 1)
-        {
-            nroPagina = 1;
+            if (nroPagina < 1)
+            {
+                nroPagina = 1;
+            }
+
+            if (tamPagina < 1)
+            {
+                tamPagina = 5;
+            }
+            int cantidadAOmitir = (nroPagina - 1) * tamPagina;
+
+            return contexto_bd.Intercambios
+                .Include(intercambio => intercambio.LibroOfrecido)
+                .Include(intercambio => intercambio.LibroSolicitado)
+                .Where(intercambio =>
+                    intercambio.Activo &&  (intercambio.UsuarioOrigenId == usuarioId || intercambio.UsuarioDestinoId == usuarioId))
+                .OrderBy(intercambio => intercambio.Id)
+                .Skip(cantidadAOmitir)
+                .Take(tamPagina)
+                .ToList();
         }
 
-        if (tamPagina < 1)
-        {
-            tamPagina = 10;
-        }
 
-        int cantidadAOmitir = (nroPagina - 1) * tamPagina;
-
-        return contexto_bd.Intercambios
-            .Include(intercambio => intercambio.LibroOfrecido)
-            .Include(intercambio => intercambio.LibroSolicitado)
-            .Where(intercambio =>
-                intercambio.Activo &&  (intercambio.UsuarioOrigenId == usuarioId || intercambio.UsuarioDestinoId == usuarioId))
-            .OrderBy(intercambio => intercambio.Id)
-            .Skip(cantidadAOmitir)
-            .Take(tamPagina)
-            .ToList();
-    }
 
     public int ObtenerCantidadPorUsuario(int usuarioId)
     {

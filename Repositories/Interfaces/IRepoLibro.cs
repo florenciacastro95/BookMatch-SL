@@ -23,4 +23,6 @@ public interface IRepoLibro : IRepositorio<Libro>
     int ObtenerCantidadPorUsuario(int usuarioId);
 
     bool TieneIntercambioBloqueante(int libroId);
+
+    IList<Libro> BuscarPropiosDisponibles(int usuarioId, string texto);
 }

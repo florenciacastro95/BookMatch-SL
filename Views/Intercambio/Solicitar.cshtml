@@ -2,57 +2,138 @@
     ViewData["Title"] = "Solicitar intercambio";
 }
 
-<div class="solicitar-intercambio mt-4">
+@* Contenedor que administra Vue *@
+<div id="solicitarIntercambio" class="solicitar-intercambio mt-4"
+     data-url-busqueda="@Url.Action("BuscarLibrosParaOfrecer", "Intercambio")">
+
     <h1 class="mb-3">Solicitar intercambio</h1>
+
     <p class="mb-4">
         Elegí uno de tus libros para ofrecer a cambio del libro que te interesa.
     </p>
 
     <form asp-controller="Intercambio" asp-action="Solicitar" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"> </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+        @* Dato que recibe el POST para identificar el libro solicitado *@
         <input type="hidden" name="LibroSolicitadoId" value="@ViewBag.LibroSolicitadoId" />
-            
+
         <div class="mb-4">
-         
-            <p class="mb-1">Libro que querés recibir</p>
+            <p class="fw-bold mb-1">Libro que querés recibir</p>
             <p>@ViewBag.LibroSolicitadoTitulo</p>
         </div>
 
-        <div class="mb-3">
-            <label for="libroOfrecido" class="form-label">
-                Libro para intercambiar
-            </label>
-            <select id="libroOfrecido" name="LibroOfrecidoId" class="form-select" aria-describedby="ayudaLibroOfrecido"
-                    required>
-                <option value="">Seleccioná uno de tus libros</option>
+        @* MODIFICADO: buscador y resultados en dos columnas *@
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="textoBusqueda" class="form-label">
+                    1. Ingresá una palabra o letra para filtrar tu lista.
+                </label>
 
-                @foreach (Bookmatch_SL.Models.Libro libro in ViewBag.LibrosParaOfrecer)
-                {
-                    <option value="@libro.Id">@libro.Titulo</option>
-                }
-            </select>
-            @if (ViewBag.LibrosParaOfrecer.Count == 0)
-            {
-                <p id="ayudaLibroOfrecido" class="mt-2">
-                    No tenés libros disponibles para ofrecer.
-                    <a asp-controller="Libro" asp-action="Create">
-                        Publicá un libro
-                    </a>
-                    para comenzar.
+                <div class="d-flex gap-2">
+                    <input id="textoBusqueda" type="search" class="form-control" placeholder="Título o autor"
+                           v-model="textoBusqueda" v-bind:disabled="buscando" />
+
+                    <button type="button" class="boton boton-secundario" v-on:click="buscarLibros"
+                            v-bind:disabled="buscando || !textoBusqueda.trim()">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-6 mt-3 mt-md-0">
+                <label for="libroOfrecido" class="form-label">
+                    2. Seleccioná un resultado
+                </label>
+
+                @* Vue genera una opción por cada libro encontrado *@
+                <select id="libroOfrecido" name="LibroOfrecidoId" class="form-select" v-model="libroOfrecidoId"
+                        v-bind:disabled="buscando || libros.length === 0" required>
+                    <option value="">Seleccioná un libro de los resultados</option>
+
+                    <option v-for="libro in libros" v-bind:key="libro.id" v-bind:value="libro.id">
+                        {{ libro.titulo }} — {{ libro.autor }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-12 mt-2">
+                <p role="status" aria-live="polite">
+                    {{ mensaje }}
                 </p>
-            }
+            </div>
         </div>
 
-
-
         <div class="d-flex flex-wrap align-items-center gap-3">
-            <button type="submit" class="boton boton-principal">
+            <button type="submit" class="boton boton-principal" v-bind:disabled="buscando || !libroOfrecidoId">
                 Enviar propuesta
             </button>
- 
-            <a asp-action="Index" class="enlace-volver">
+
+            <a asp-controller="Libro" asp-action="Index" class="enlace-volver">
                 Cancelar
             </a>
         </div>
     </form>
 </div>
+
+@section Scripts {
+    @* En Razor, @@ permite escribir el @ de la dirección *@
+    <script src="https://unpkg.com/vue@@3/dist/vue.global.js"></script>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    textoBusqueda: "",
+                    libros: [],
+                    libroOfrecidoId: "",
+                    mensaje: "",
+                    buscando: false
+                };
+            },
+
+            methods: {
+                async buscarLibros() {
+                
+                    if (!this.textoBusqueda.trim() || this.buscando) {
+                        return;
+                    }
+
+                   
+                    this.libros = [];
+                    this.libroOfrecidoId = "";
+                    this.buscando = true;
+                    this.mensaje = "Buscando...";
+
+                    try {
+                       
+                        const contenedor = document.getElementById("solicitarIntercambio");
+                        const direccion = contenedor.dataset.urlBusqueda;
+
+                        
+                        const respuesta = await fetch(
+                            direccion + "?texto=" + encodeURIComponent(this.textoBusqueda.trim())
+                        );
+
+                        if (!respuesta.ok || respuesta.redirected) {
+                            throw new Error("No se pudo buscar");
+                        }
+
+                       
+                        this.libros = await respuesta.json();
+
+                        if (this.libros.length === 0) {
+                            this.mensaje = "No se encontraron coincidencias";
+                        } else {
+                            this.mensaje = "Elegí un libro en el desplegable de resultados.";
+                        }
+                    } catch {
+                        this.mensaje = "No se pudo buscar. Intentá nuevamente.";
+                    }
+
+                    this.buscando = false;
+                }
+            }
+        }).mount("#solicitarIntercambio");
+    </script>
+}

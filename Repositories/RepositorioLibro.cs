@@ -15,6 +15,29 @@ public class RepositorioLibro : IRepoLibro
         this.contexto_bd = contexto_bd;
     }
 
+    public IList<Libro> BuscarPropiosDisponibles(int usuarioId, string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            return new List<Libro>();
+        }
+
+        texto = texto.Trim();
+        return contexto_bd.Libros
+            .Where(libro =>
+                libro.Activo &&
+                libro.Disponible &&
+                libro.UsuarioId == usuarioId &&
+                (libro.Titulo.Contains(texto) ||
+                 libro.Autor.Contains(texto)))
+            .OrderBy(libro => libro.Titulo)
+            .ThenBy(libro => libro.Id)
+            .Take(5)
+            .ToList();
+    }
+
+
+
     public int Alta(Libro entidad)
     {
         if (entidad == null) return 0;
@@ -56,7 +79,6 @@ public class RepositorioLibro : IRepoLibro
         {
             libroExistente.Disponible = entidad.Disponible;
         }
-
         return contexto_bd.SaveChanges();
     }
 
@@ -194,4 +216,6 @@ public class RepositorioLibro : IRepoLibro
                 || i.Estado == EstadoIntercambio.Exitoso
             ));
     }
+
+
 }
