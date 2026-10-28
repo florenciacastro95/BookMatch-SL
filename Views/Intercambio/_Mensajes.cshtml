@@ -14,9 +14,7 @@
     string? identificadorUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
-@* los data-* le pasan al JavaScript (chatIntercambio.js) qué intercambio es y quién soy *@
-<section id="chatIntercambio" class="mensajes-intercambio mb-4"
-         data-intercambio-id="@Model.Id" data-usuario-id="@identificadorUsuario">
+<section id="chatIntercambio" class="mensajes-intercambio mb-4">
     <h2 class="h4 mb-3">Mensajes</h2>
 
     <div id="listaMensajes" class="border rounded p-3 mb-3" style="max-height: 400px; overflow-y: auto;">
