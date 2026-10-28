@@ -191,3 +191,9 @@
         Regresar al listado
     </a>
 </div>
+
+@* los scripts van en la sección Scripts del layout porque una vista parcial no puede tener secciones *@
+@section Scripts {
+    <script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/chatIntercambio.js" asp-append-version="true"></script>
+}

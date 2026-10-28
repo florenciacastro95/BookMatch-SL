@@ -14,13 +14,15 @@
     string? identificadorUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
-<section class="mensajes-intercambio mb-4">
+@* los data-* le pasan al JavaScript (chatIntercambio.js) qué intercambio es y quién soy *@
+<section id="chatIntercambio" class="mensajes-intercambio mb-4"
+         data-intercambio-id="@Model.Id" data-usuario-id="@identificadorUsuario">
     <h2 class="h4 mb-3">Mensajes</h2>
 
-    <div class="border rounded p-3 mb-3" style="max-height: 400px; overflow-y: auto;">
+    <div id="listaMensajes" class="border rounded p-3 mb-3" style="max-height: 400px; overflow-y: auto;">
         @if (mensajes.Count == 0)
         {
-            <p class="mb-0">Todavía no hay mensajes. Escribí el primero para coordinar el intercambio.</p>
+            <p id="avisoSinMensajes" class="mb-0">Todavía no hay mensajes. Escribí el primero para coordinar el intercambio.</p>
         }
         else
         {
@@ -47,7 +49,9 @@
 
     @if (puedeEscribir)
     {
-        <form asp-controller="Mensaje" asp-action="Enviar" method="post">
+        @* si SignalR está conectado, el JavaScript manda el mensaje por el hub;
+           si no, este formulario se manda común a MensajeController *@
+        <form id="formularioMensaje" asp-controller="Mensaje" asp-action="Enviar" method="post">
             <input type="hidden" name="intercambioId" value="@Model.Id" />
 
             <div class="mb-2">
@@ -55,6 +59,8 @@
                 <textarea id="contenidoMensaje" name="contenido" class="form-control" rows="2"
                           maxlength="500" required></textarea>
             </div>
+
+            <p id="errorChat" class="text-danger" role="alert"></p>
 
             <button type="submit" class="boton boton-principal">
                 Enviar mensaje
