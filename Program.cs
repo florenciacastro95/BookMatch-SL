@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using Bookmatch_SL.Hubs;
 using Bookmatch_SL.Models;
 using Bookmatch_SL.Repositories;
 using Bookmatch_SL.Repositories.Interfaces;
@@ -15,6 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+// SignalR para el chat en tiempo real de los intercambios
+builder.Services.AddSignalR();
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 
@@ -189,6 +192,9 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapControllers();
+
+// el JavaScript del chat se conecta a esta dirección para hablar con el hub
+app.MapHub<ChatIntercambioHub>("/chatIntercambioHub");
 
 app.MapControllerRoute(
     name: "default",
