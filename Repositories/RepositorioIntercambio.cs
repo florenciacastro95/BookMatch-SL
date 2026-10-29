@@ -16,6 +16,17 @@ public class RepositorioIntercambio : IRepoIntercambio
     }
 
 
+    public bool ExistePropuestaPendiente(int usuarioOrigenId, int usuarioDestinoId, int libroOfrecidoId, int libroSolicitadoId)
+    {
+        return contexto_bd.Intercambios.Any(intercambio => intercambio.Activo &&
+            intercambio.Estado == EstadoIntercambio.Pendiente &&
+            intercambio.UsuarioOrigenId == usuarioOrigenId &&
+            intercambio.UsuarioDestinoId == usuarioDestinoId &&
+            intercambio.LibroOfrecidoId == libroOfrecidoId &&
+            intercambio.LibroSolicitadoId == libroSolicitadoId);
+    }
+
+
     //alta, solicitud=pendiente, libros siguen disponibles hasta que se el ok del intermcabio 
     public int Alta(Intercambio nuevo_intercambio)
     {
@@ -65,6 +76,21 @@ public class RepositorioIntercambio : IRepoIntercambio
             return 0;
         }
 
+        bool existePropuestaPendiente = contexto_bd.Intercambios.Any(intercambio =>
+            intercambio.Activo &&
+            intercambio.Estado == EstadoIntercambio.Pendiente &&
+            intercambio.UsuarioOrigenId == nuevo_intercambio.UsuarioOrigenId &&
+            intercambio.UsuarioDestinoId == nuevo_intercambio.UsuarioDestinoId &&
+            intercambio.LibroOfrecidoId == nuevo_intercambio.LibroOfrecidoId &&
+            intercambio.LibroSolicitadoId == nuevo_intercambio.LibroSolicitadoId);
+
+        if (ExistePropuestaPendiente(nuevo_intercambio.UsuarioOrigenId, nuevo_intercambio.UsuarioDestinoId, nuevo_intercambio.LibroOfrecidoId, nuevo_intercambio.LibroSolicitadoId))
+        {
+            return 0;
+        }
+
+
+
         nuevo_intercambio.Estado = EstadoIntercambio.Pendiente;
         nuevo_intercambio.Activo = true;
         nuevo_intercambio.CreatedAt = DateTime.Now;
@@ -109,7 +135,7 @@ public class RepositorioIntercambio : IRepoIntercambio
 
         if (tamPagina < 1)
         {
-            tamPagina = 10;
+            tamPagina = 5;
         }
         // ej pag 2 con 10 registro, se omiten los primeros 10 y devuelve los sig 10
         // (2 -1 ) * 10 = 10 sig
@@ -117,7 +143,7 @@ public class RepositorioIntercambio : IRepoIntercambio
 
         return contexto_bd.Intercambios
             .Include(intercambio => intercambio.LibroOfrecido)
-.Include(intercambio => intercambio.LibroSolicitado)
+            .Include(intercambio => intercambio.LibroSolicitado)
             .Where(intercambio => intercambio.Activo)
             .OrderBy(intercambio => intercambio.Id)
             .Skip(cantidadAOmitir)
@@ -132,6 +158,9 @@ public class RepositorioIntercambio : IRepoIntercambio
         return contexto_bd.Intercambios
             .Count(intercambio => intercambio.Activo);
     }
+
+
+
     // permisivo pra devovler nill o el intercam x id
     public Intercambio? ObtenerPorId(int idIntercambio)
     {
@@ -143,17 +172,42 @@ public class RepositorioIntercambio : IRepoIntercambio
     }
 
     // - intermbios activos donde el user participa como origen o destino
-
-    public IList<Intercambio> ObtenerPorUsuario(int usuarioId)
+    public IList<Intercambio> ObtenerPorUsuario(
+        int usuarioId,
+        int nroPagina = 1,
+        int tamPagina = 5)
     {
-        return contexto_bd.Intercambios
-            .Where(intercambio =>
-                intercambio.Activo &&
-                (intercambio.UsuarioOrigenId == usuarioId ||
-                 intercambio.UsuarioDestinoId == usuarioId))
-            .OrderBy(intercambio => intercambio.Id)
-            .ToList();
+            if (nroPagina < 1)
+            {
+                nroPagina = 1;
+            }
+
+            if (tamPagina < 1)
+            {
+                tamPagina = 5;
+            }
+            int cantidadAOmitir = (nroPagina - 1) * tamPagina;
+
+            return contexto_bd.Intercambios
+                .Include(intercambio => intercambio.LibroOfrecido)
+                .Include(intercambio => intercambio.LibroSolicitado)
+                .Where(intercambio =>
+                    intercambio.Activo &&  (intercambio.UsuarioOrigenId == usuarioId || intercambio.UsuarioDestinoId == usuarioId))
+                .OrderBy(intercambio => intercambio.Id)
+                .Skip(cantidadAOmitir)
+                .Take(tamPagina)
+                .ToList();
+        }
+
+
+
+    public int ObtenerCantidadPorUsuario(int usuarioId)
+    {
+        return contexto_bd.Intercambios.Count(intercambio =>
+            intercambio.Activo &&
+            (intercambio.UsuarioOrigenId == usuarioId || intercambio.UsuarioDestinoId == usuarioId));
     }
+
 
     //intermcabios pendientes de todos los user
     public IList<Intercambio> ObtenerPorEstado(EstadoIntercambio estado)

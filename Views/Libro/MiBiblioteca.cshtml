@@ -1,0 +1,115 @@
+@model IEnumerable<Bookmatch_SL.Models.Libro>
+
+@{
+    ViewData["Title"] = "Mi biblioteca";
+    int paginaActual = ViewBag.PaginaActual;
+    int totalPaginas = ViewBag.TotalPaginas;
+}
+
+<div class="container mt-4">
+    <h2>Mi biblioteca</h2>
+    @if (TempData["ErrorLibro"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["ErrorLibro"]
+        </div>
+    }
+    <p>
+        Acá están tus libros activos, tanto los disponibles
+        para trueque como los que pausaste temporalmente.
+    </p>
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">
+            Publicar nuevo libro
+        </a>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Volver al catálogo
+        </a>
+    </p>
+
+    @if (!Model.Any())
+    {
+        <p>Todavía no publicaste ningún libro activo.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Portada</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Categoría</th>
+                        <th>Disponible para trueque</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var libro in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@libro.PortadaUrl" alt="Portada de @libro.Titulo"
+                                     style="width: 60px; height: 80px; object-fit: cover;" />
+                            </td>
+
+                            <td>@libro.Titulo</td>
+                            <td>@libro.Autor</td>
+                            <td>@libro.Categoria?.Nombre</td>
+
+                            <td>
+                                @if (libro.Disponible)
+                                {
+                                    <span class="badge bg-success">Sí</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">No</span>
+                                }
+                            </td>
+
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@libro.Id" class="btn btn-sm btn-primary">
+                                    Editar
+                                </a>
+
+                                <a asp-action="Details" asp-route-id="@libro.Id" class="btn btn-sm btn-outline-secondary">
+                                    Ver
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@libro.Id" class="btn btn-sm btn-outline-danger">
+                                    Dar de baja
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (totalPaginas > 1)
+    {
+        <nav aria-label="Paginación de mi biblioteca">
+            <ul class="pagination">
+                @for (int pagina = 1; pagina <= totalPaginas; pagina++)
+                {
+                    <li class="page-item @(pagina == paginaActual ? "active" : "")">
+                        <a class="page-link" asp-action="MiBiblioteca" asp-route-pagina="@pagina">
+                            @pagina
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+    <p class="text-muted">
+        Página @paginaActual de @totalPaginas
+        · @ViewBag.TotalRegistros libros activos
+    </p>
+</div>

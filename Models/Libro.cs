@@ -33,9 +33,9 @@ public class Libro
 
 
 
-    public Usuario Usuario { get; set; } = null!;
+    public Usuario? Usuario { get; set; }
 
-    public Categoria Categoria { get; set; } = null!;
+    public Categoria? Categoria { get; set; }
 
     public ICollection<Intercambio> IntercambiosComoOfrecido { get; set; }
         = new List<Intercambio>();

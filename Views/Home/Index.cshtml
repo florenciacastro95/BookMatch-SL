@@ -1,15 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">BookMatch</h1>
-    <p>Este es el proyecto final de Lab 2, un sistema de intercambio de libros. ¿Te gusta mi libro? A mí me gusta el
-        tuyo y pum, Bookmatch.</a>.</p>
-    </div>
-    @{
-        ViewData["Title"] = "Intercambios";
-    }
+<section class="py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="mb-2">BookMatch</h1>
 
-<h1>Intercambios</h1>
-<p>Solicitudes de intercambio de libros de usuarios activos</p>
+            <p class="mb-3">
+                Este es el proyecto final de Lab 2, un sistema de intercambio de libros.<br /><br />
+            </p>
+
+            <h2 class="mb-2">
+                ¿Te gusta mi libro? A mí me gusta el tuyo y pum, Bookmatch.
+            </h2>
+
+            <p class="fs-5 mb-3">
+                Tu próxima lectura puede ser un flechazo.<br />
+                Explorá la biblioteca y encontrá tu BookMatch.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+                <a asp-controller="Libro" asp-action="Index" class="boton boton-principal">
+                    Encontrá tu próximo flechazo
+                </a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Libro" asp-action="Create" class="boton boton-secundario">
+                        Publicar un libro
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -5,6 +5,7 @@
 .vscode/
 .idea/
 Aignorar/
+bin/
 
 *.user
 *.suo
@@ -15,4 +16,5 @@ obj/Debug/net10.0/Bookmatch-SL.AssemblyInfo.cs
 /obj/Debug
 /obj
 /obj
-/obj/Debug
+/wwwroot/uploads/obj/
+bin/

@@ -1,0 +1,93 @@
+@model UsuarioAdminIndexViewModel
+
+@{
+    ViewData["Title"] = "Administrar usuarios";
+}
+
+<h1>Administrar usuarios</h1>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Avatar</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Registrado</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var usuario in Model.Usuarios)
+        {
+            <tr>
+                <td>@usuario.Id</td>
+
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(usuario.AvatarUrl))
+                    {
+                        <img src="@usuario.AvatarUrl"
+                             alt="Avatar"
+                             class="rounded-circle"
+                             style="width: 40px; height: 40px; object-fit: cover;" />
+                    }
+                </td>
+
+                <td>@usuario.Nombre</td>
+                <td>@usuario.Email</td>
+                <td>@usuario.Rol</td>
+
+                <td>
+                    @if (usuario.Activo)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </td>
+
+                <td>@usuario.CreatedAt.ToString("dd/MM/yyyy")</td>
+
+                <td>
+                    <a asp-action="Editar"
+                       asp-route-id="@usuario.Id"
+                       class="btn btn-sm btn-outline-primary">
+                        Editar
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.TotalPaginas > 1)
+{
+    <nav aria-label="Paginación de usuarios">
+        <ul class="pagination">
+            @for (int pagina = 1; pagina <= Model.TotalPaginas; pagina++)
+            {
+                <li class="page-item @(pagina == Model.PaginaActual ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pagina="@pagina">
+                        @pagina
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -13,4 +13,16 @@ public interface IRepoLibro : IRepositorio<Libro>
     IList<Libro> ObtenerPorUsuario(int usuarioId);
 
     IList<Libro> ObtenerDisponibles();
+    IList<Libro> ObtenerCatalogoPublico(int paginaNro, int tamPagina);
+
+    int ObtenerCantidadCatalogoPublico();
+
+    IList<Libro> ObtenerPorUsuarioPaginado(
+        int usuarioId, int paginaNro, int tamPagina);
+
+    int ObtenerCantidadPorUsuario(int usuarioId);
+
+    bool TieneIntercambioBloqueante(int libroId);
+
+    IList<Libro> BuscarPropiosDisponibles(int usuarioId, string texto);
 }

@@ -2,6 +2,7 @@ using Bookmatch_SL.Models;
 using Bookmatch_SL.Repositories.Interfaces;
 using BookmatchSL.Data;
 using Microsoft.EntityFrameworkCore;
+using Bookmatch_SL.Models.Enums;
 
 namespace Bookmatch_SL.Repositories;
 
@@ -13,6 +14,29 @@ public class RepositorioLibro : IRepoLibro
     {
         this.contexto_bd = contexto_bd;
     }
+
+    public IList<Libro> BuscarPropiosDisponibles(int usuarioId, string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            return new List<Libro>();
+        }
+
+        texto = texto.Trim();
+        return contexto_bd.Libros
+            .Where(libro =>
+                libro.Activo &&
+                libro.Disponible &&
+                libro.UsuarioId == usuarioId &&
+                (libro.Titulo.Contains(texto) ||
+                 libro.Autor.Contains(texto)))
+            .OrderBy(libro => libro.Titulo)
+            .ThenBy(libro => libro.Id)
+            .Take(5)
+            .ToList();
+    }
+
+
 
     public int Alta(Libro entidad)
     {
@@ -31,7 +55,8 @@ public class RepositorioLibro : IRepoLibro
     {
         var libro = ObtenerPorId(id);
         if (libro == null) return 0;
-
+        if (TieneIntercambioBloqueante(id))
+            return 0;
         libro.Activo = false;
         return contexto_bd.SaveChanges();
     }
@@ -50,8 +75,10 @@ public class RepositorioLibro : IRepoLibro
         libroExistente.PortadaUrl = entidad.PortadaUrl;
         libroExistente.EstadoConservacion = entidad.EstadoConservacion;
         libroExistente.CategoriaId = entidad.CategoriaId;
-        libroExistente.Disponible = entidad.Disponible;
-
+        if (!TieneIntercambioBloqueante(libroExistente.Id))
+        {
+            libroExistente.Disponible = entidad.Disponible;
+        }
         return contexto_bd.SaveChanges();
     }
 
@@ -128,4 +155,67 @@ public class RepositorioLibro : IRepoLibro
             .Where(l => l.Activo && l.Disponible)
             .ToList();
     }
+    public IList<Libro> ObtenerCatalogoPublico(
+    int paginaNro, int tamPagina)
+    {
+        if (paginaNro < 1) paginaNro = 1;
+        if (tamPagina < 1) tamPagina = 10;
+
+        int omitir = (paginaNro - 1) * tamPagina;
+
+        return contexto_bd.Libros
+            .Include(l => l.Categoria)
+            .Include(l => l.Usuario)
+            .Where(l => l.Activo && l.Disponible)
+            .OrderByDescending(l => l.CreatedAt)
+            .ThenByDescending(l => l.Id)
+            .Skip(omitir)
+            .Take(tamPagina)
+            .ToList();
+    }
+
+    public int ObtenerCantidadCatalogoPublico()
+    {
+        return contexto_bd.Libros
+            .Count(l => l.Activo && l.Disponible);
+    }
+
+    public IList<Libro> ObtenerPorUsuarioPaginado(
+        int usuarioId, int paginaNro, int tamPagina)
+    {
+        if (paginaNro < 1) paginaNro = 1;
+        if (tamPagina < 1) tamPagina = 10;
+
+        int omitir = (paginaNro - 1) * tamPagina;
+
+        return contexto_bd.Libros
+            .Include(l => l.Categoria)
+            .Where(l => l.Activo && l.UsuarioId == usuarioId)
+            .OrderByDescending(l => l.CreatedAt)
+            .ThenByDescending(l => l.Id)
+            .Skip(omitir)
+            .Take(tamPagina)
+            .ToList();
+    }
+
+    public int ObtenerCantidadPorUsuario(int usuarioId)
+    {
+        return contexto_bd.Libros
+            .Count(l => l.Activo && l.UsuarioId == usuarioId);
+    }
+
+    public bool TieneIntercambioBloqueante(int libroId)
+    {
+        return contexto_bd.Intercambios.Any(i =>
+            (i.LibroOfrecidoId == libroId ||
+             i.LibroSolicitadoId == libroId) &&
+            (
+                (i.Activo &&
+                 (i.Estado == EstadoIntercambio.Pendiente ||
+                  i.Estado == EstadoIntercambio.Aceptado))
+                || i.Estado == EstadoIntercambio.Exitoso
+            ));
+    }
+
+
 }
