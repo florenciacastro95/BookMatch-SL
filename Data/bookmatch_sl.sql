@@ -23,17 +23,15 @@ DROP TABLE IF EXISTS `auditoria`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `auditoria` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `usuario_id` int NOT NULL,
-  `Accion` varchar(255) DEFAULT NULL,
-  `Entidad` varchar(255) DEFAULT NULL,
-  `idEntidad` int DEFAULT NULL,
-  `FechaHora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `datos_anteriores` text,
-  `datos_nuevos` text,
-  PRIMARY KEY (`id`),
-  KEY `fk_auditoria_usuario` (`usuario_id`),
-  CONSTRAINT `fk_auditoria_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`)
+  `id_auditoria` int NOT NULL AUTO_INCREMENT,
+  `id_usuario` int DEFAULT NULL,
+  `accion` varchar(100) NOT NULL,
+  `entidad` varchar(100) NOT NULL,
+  `id_entidad` int DEFAULT NULL,
+  `fecha_hora` datetime(6) NOT NULL,
+  `datos_anteriores` longtext,
+  `datos_nuevos` longtext,
+  PRIMARY KEY (`id_auditoria`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -205,7 +203,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Juan','juan.prueba@gmail.com',NULL,'Usuario',NULL,1,'2026-10-20 20:15:16'),(2,'Ana','ana.prueba@gmail.com',NULL,'Usuario',NULL,1,'2026-10-20 20:16:47');
+INSERT INTO `usuario` VALUES (1,'Juan','juan.prueba@gmail.com','','Usuario',NULL,1,'2026-10-20 20:15:16'),(2,'Ana','ana.prueba@gmail.com','','Usuario',NULL,1,'2026-10-20 20:16:47');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
