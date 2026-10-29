@@ -1,71 +1,291 @@
-@model IList<Bookmatch_SL.Models.Categoria>
-
 @{
     ViewData["Title"] = "Categorías";
 }
 
-<h1>Categorías</h1>
+@* ABM de categorías con Vue: listar, crear, editar y desactivar se hace por AJAX sin recargar la página *@
+<div id="abmCategorias" class="mt-4">
+    <h1 class="mb-3">Categorías</h1>
 
-@if (Model.Count == 0)
-{
-    <p>Aún no hay registros de categorías</p>
-}
-else
-{
-    <table class="table listado">
-        <thead>
-            <tr>
-                <th>Número</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var categoria in Model)
-            {
+    @* avisos de Bootstrap: verde cuando salió bien, rojo cuando hubo un problema *@
+    <div v-if="mensajeExito" class="alert alert-success" role="status">{{ mensajeExito }}</div>
+    <div v-if="mensajeError" class="alert alert-danger" role="alert">{{ mensajeError }}</div>
+
+    @* MODO LISTADO *@
+    <div v-if="modoActual == modos.listado">
+        <button type="button" class="boton boton-principal mb-3" v-on:click="nuevaCategoria">
+            Nueva categoría
+        </button>
+
+        @* antes de desactivar se pregunta, para no dar de baja por error *@
+        <div v-if="categoriaADesactivar" class="alert alert-warning d-flex flex-wrap align-items-center gap-3" role="alert">
+            <span>Seguro que queres desactivar {{ categoriaADesactivar.nombre }}?</span>
+            <button type="button" class="boton boton-principal" v-on:click="desactivarCategoria" v-bind:disabled="guardando">
+                Sí
+            </button>
+            <button type="button" class="boton boton-secundario" v-on:click="categoriaADesactivar = null">
+                No
+            </button>
+        </div>
+
+        <p v-if="!cargando && categorias.length == 0">Todavia no hay categorias</p>
+
+        <table v-if="categorias.length > 0" class="table listado">
+            <thead>
                 <tr>
-                    <td>@categoria.Id</td>
-                    <td>@categoria.Nombre</td>
+                    <th>Número</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="categoria in categorias" v-bind:key="categoria.id">
+                    <td>{{ categoria.id }}</td>
+                    <td>{{ categoria.nombre }}</td>
                     <td>
-                        <a asp-action="Editar" asp-route-id="@categoria.Id">
-                            Editar
-                        </a>
-                        <a asp-action="Desactivar" asp-route-id="@categoria.Id">
-                            Desactivar
-                        </a>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="boton boton-secundario" v-on:click="editarCategoria(categoria)">
+                                Editar
+                            </button>
+                            <button type="button" class="boton boton-secundario" v-on:click="confirmarDesactivacion(categoria)">
+                                Desactivar
+                            </button>
+                        </div>
                     </td>
                 </tr>
-            }
-        </tbody>
-    </table>
-    @if (ViewBag.TotalPaginas > 1)
-    {
-        <nav aria-label="Páginas de categorías" class="d-flex justify-content-between align-items-center mt-4">
+            </tbody>
+        </table>
 
+        @* cada botón le pide al servidor otra página, no se trae todo de una *@
+        <nav v-if="totalPaginas > 1" aria-label="Páginas de categorías" class="d-flex justify-content-between align-items-center mt-4">
             <div>
-                @if (ViewBag.PaginaActual > 1)
-                {
-                    <a asp-action="Index" asp-route-pagina="@(ViewBag.PaginaActual - 1)" class="boton boton-secundario">
-                        Anterior
-                    </a>
-                }
+                <button type="button" class="boton boton-secundario" v-if="paginaActual > 1"
+                        v-on:click="cargarCategorias(paginaActual - 1)" v-bind:disabled="cargando">
+                    Anterior
+                </button>
             </div>
 
-            <span>
-                Página @ViewBag.PaginaActual de @ViewBag.TotalPaginas
-            </span>
+            <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
 
             <div>
-                @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
-                {
-                    <a asp-action="Index" asp-route-pagina="@(ViewBag.PaginaActual + 1)" class="boton boton-secundario">
-                        Siguiente
-                    </a>
-                }
+                <button type="button" class="boton boton-secundario" v-if="paginaActual < totalPaginas"
+                        v-on:click="cargarCategorias(paginaActual + 1)" v-bind:disabled="cargando">
+                    Siguiente
+                </button>
             </div>
         </nav>
-    }
+    </div>
 
+    @* MODO EDICIÓN: el mismo formulario sirve para el alta y para la modificación.
+       Va con v-show y no con v-if para que el token antifalsificación esté siempre en la página *@
+    <div v-show="modoActual == modos.edicion">
+        <h2 class="h4 mb-3">{{ categoriaActual.id ? "Editar categoría" : "Nueva categoría" }}</h2>
 
+        <form id="formCategoria" asp-antiforgery="true" v-on:submit.prevent="guardarCategoria">
+            <div class="mb-4">
+                <label for="nombreCategoria" class="form-label">Nombre</label>
+                <input id="nombreCategoria" class="form-control" maxlength="255" v-model="categoriaActual.nombre" />
+                <span class="text-danger" v-if="errorNombre">{{ errorNombre }}</span>
+            </div>
 
+            <div class="d-flex gap-3">
+                <button type="submit" class="boton boton-principal" v-bind:disabled="guardando">
+                    Guardar
+                </button>
+                <button type="button" class="boton boton-secundario" v-on:click="cancelarEdicion">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @* En Razor, @@ permite escribir el @ de la dirección *@
+    <script src="https://unpkg.com/vue@@3/dist/vue.global.js"></script>
+
+    <script>
+        // direcciones de las acciones AJAX del controlador
+        const urlListar = "@Url.Action("Listar", "Categoria")";
+        const urlGuardar = "@Url.Action("GuardarAjax", "Categoria")";
+        const urlDesactivar = "@Url.Action("DesactivarAjax", "Categoria")";
+        const categoriaVacia = { id: 0, nombre: "" };
+
+        Vue.createApp({
+            data() {
+                return {
+                    modos: {
+                        listado: 1,
+                        edicion: 2
+                    },
+                    modoActual: 1,
+                    categorias: [],
+                    paginaActual: 1,
+                    totalPaginas: 1,
+                    categoriaActual: { ...categoriaVacia },
+                    categoriaADesactivar: null,
+                    errorNombre: "",
+                    mensajeExito: "",
+                    mensajeError: "",
+                    cargando: false,
+                    guardando: false
+                };
+            },
+
+            methods: {
+                // el token va en el encabezado de cada POST, como en el ejemplo de clase
+                obtenerToken() {
+                    return document.querySelector('#formCategoria input[name="__RequestVerificationToken"]').value;
+                },
+
+                limpiarMensajes() {
+                    this.mensajeExito = "";
+                    this.mensajeError = "";
+                    this.errorNombre = "";
+                },
+
+                // saca el primer mensaje de error que mandó el servidor, sin importar cómo se llame el campo
+                primerError(errores) {
+                    if (!errores) {
+                        return "";
+                    }
+                    for (const campo in errores) {
+                        const valor = errores[campo];
+                        if (Array.isArray(valor) && valor.length > 0) {
+                            return valor.join(", ");
+                        }
+                        if (typeof valor === "string" && valor) {
+                            return valor;
+                        }
+                    }
+                    return "";
+                },
+
+                async cargarCategorias(pagina) {
+                    this.cargando = true;
+
+                    try {
+                        const respuesta = await fetch(urlListar + "?pagina=" + pagina);
+
+                        // si se venció la sesión el servidor redirige al login en vez de mandar JSON
+                        if (!respuesta.ok || respuesta.redirected) {
+                            throw new Error("No se pudo cargar");
+                        }
+
+                        const datos = await respuesta.json();
+                        this.categorias = datos.categorias;
+                        this.paginaActual = datos.paginaActual;
+                        this.totalPaginas = datos.totalPaginas;
+                    } catch {
+                        this.mensajeError = "No se pudieron cargar las categorias, proba de nuevo";
+                    }
+
+                    this.cargando = false;
+                },
+
+                nuevaCategoria() {
+                    this.limpiarMensajes();
+                    this.categoriaADesactivar = null;
+                    this.categoriaActual = { ...categoriaVacia };
+                    this.modoActual = this.modos.edicion;
+                },
+
+                editarCategoria(categoria) {
+                    this.limpiarMensajes();
+                    this.categoriaADesactivar = null;
+                    // copia, para que la fila del listado no cambie mientras se escribe
+                    this.categoriaActual = { ...categoria };
+                    this.modoActual = this.modos.edicion;
+                },
+
+                cancelarEdicion() {
+                    this.limpiarMensajes();
+                    this.categoriaActual = { ...categoriaVacia };
+                    this.modoActual = this.modos.listado;
+                },
+
+                async guardarCategoria() {
+                    this.limpiarMensajes();
+
+                    // aviso rápido sin ir al servidor; igual el servidor lo vuelve a validar
+                    if (!this.categoriaActual.nombre.trim()) {
+                        this.errorNombre = "Pone un nombre para la categoria";
+                        return;
+                    }
+
+                    const esNueva = this.categoriaActual.id === 0;
+                    this.guardando = true;
+
+                    try {
+                        const respuesta = await fetch(urlGuardar, {
+                            method: "POST",
+                            headers: {
+                                "RequestVerificationToken": this.obtenerToken()
+                            },
+                            body: new URLSearchParams({
+                                id: this.categoriaActual.id,
+                                nombre: this.categoriaActual.nombre.trim()
+                            })
+                        });
+
+                        if (respuesta.status === 400) {
+                            // el servidor devuelve el ModelState con un mensaje por campo
+                            const errores = await respuesta.json();
+                            this.errorNombre = this.primerError(errores) || "Revisa lo que pusiste";
+                        } else if (!respuesta.ok || respuesta.redirected) {
+                            throw new Error("No se pudo guardar");
+                        } else {
+                            this.mensajeExito = esNueva ? "Listo, se creo la categoria" : "Listo, se guardaron los cambios";
+                            this.modoActual = this.modos.listado;
+                            await this.cargarCategorias(esNueva ? 1 : this.paginaActual);
+                        }
+                    } catch {
+                        this.mensajeError = "No se pudo guardar, proba de nuevo";
+                    }
+
+                    this.guardando = false;
+                },
+
+                confirmarDesactivacion(categoria) {
+                    this.limpiarMensajes();
+                    this.categoriaADesactivar = categoria;
+                },
+
+                async desactivarCategoria() {
+                    this.guardando = true;
+
+                    try {
+                        const respuesta = await fetch(urlDesactivar, {
+                            method: "POST",
+                            headers: {
+                                "RequestVerificationToken": this.obtenerToken()
+                            },
+                            body: new URLSearchParams({
+                                id: this.categoriaADesactivar.id
+                            })
+                        });
+
+                        if (respuesta.status === 400) {
+                            const errores = await respuesta.json();
+                            this.mensajeError = this.primerError(errores) || "No se pudo desactivar, proba de nuevo";
+                        } else if (!respuesta.ok || respuesta.redirected) {
+                            throw new Error("No se pudo desactivar");
+                        } else {
+                            this.mensajeExito = "Listo, se desactivo la categoria";
+                            await this.cargarCategorias(this.paginaActual);
+                        }
+                    } catch {
+                        this.mensajeError = "No se pudo desactivar, proba de nuevo";
+                    }
+
+                    this.categoriaADesactivar = null;
+                    this.guardando = false;
+                }
+            },
+
+            // apenas se abre la página se pide la primera página de categorías
+            mounted() {
+                this.cargarCategorias(1);
+            }
+        }).mount("#abmCategorias");
+    </script>
 }
