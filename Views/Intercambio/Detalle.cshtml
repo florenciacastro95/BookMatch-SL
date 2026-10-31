@@ -185,7 +185,21 @@
         </div>
     }
 
+    <partial name="_Mensajes" model="Model" />
+
     <a asp-action="Index" asp-route-pagina="@ViewBag.PaginaActual" class="boton boton-secundario">
         Regresar al listado
     </a>
 </div>
+
+@* los scripts van en la sección Scripts del layout porque una vista parcial no puede tener secciones *@
+@section Scripts {
+    @* la librería de SignalR se carga igual que en el ejemplo de clase *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.10/signalr.min.js"></script>
+    <script type="text/javascript">
+        // datos que necesita chatIntercambio.js para saber qué intercambio es y quién soy
+        const intercambioId = @Model.Id;
+        const idUsuarioAutenticado = @(identificadorUsuario ?? "0");
+    </script>
+    <script src="~/js/chatIntercambio.js" asp-append-version="true"></script>
+}
