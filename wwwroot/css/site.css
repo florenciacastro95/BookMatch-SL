@@ -55,7 +55,7 @@ body {
 
 .listado-intercambios > thead > tr > th {
     font-weight: 700;
-    border-bottom: 2px solid var(--color-secundario, #32232A);
+    border-bottom: 2px solid var(--color-azul, #485a7a);
 }
 
 .listado-intercambios a {
@@ -81,27 +81,60 @@ body {
     cursor: pointer;
 }
 
+/* combinacion B que eligio Erika: azul de la paleta, combina con el encabezado */
 .boton-principal {
-    background-color: var(--color-ciruela, #32232a);
-    border-color: var(--color-ciruela, #32232a);
+    background-color: var(--color-azul, #485a7a);
+    border-color: var(--color-azul, #485a7a);
     color: #ffffff;
 }
 
 .boton-principal:hover {
-    background-color: var(--color-oscuro, #1d1617);
-    border-color: var(--color-oscuro, #1d1617);
+    background-color: var(--color-azul-oscuro, #2a374d);
+    border-color: var(--color-azul-oscuro, #2a374d);
     color: #ffffff;
 }
 
 .boton-secundario {
     background-color: #ffffff;
-    border-color: var(--color-ciruela, #32232a);
-    color: var(--color-ciruela, #32232a);
+    border-color: var(--color-azul, #485a7a);
+    color: var(--color-azul, #485a7a);
 }
 
 .boton-secundario:hover {
     background-color: var(--color-arena, #d6c5b1);
     color: var(--color-ciruela, #32232a);
+}
+
+/* intercambio: color acento para que siempre resalte */
+.boton-intercambio {
+    background-color: var(--color-acento, #9f6932);
+    border-color: var(--color-acento, #9f6932);
+    color: #ffffff;
+}
+
+.boton-intercambio:hover {
+    background-color: var(--color-ciruela, #32232a);
+    border-color: var(--color-ciruela, #32232a);
+    color: #ffffff;
+}
+
+.boton-rechazo {
+    background-color: #ffffff;
+    border-color: var(--color-rechazo, #522623);
+    color: var(--color-rechazo, #522623);
+}
+
+.boton-rechazo:hover {
+    background-color: var(--color-rechazo, #522623);
+    color: #ffffff;
+}
+
+/* icono de intercambio: dos libros con flechas (esta en _Layout) */
+.icono-intercambio {
+    width: 1.6em;
+    height: 1em;
+    margin-right: 0.5rem;
+    --color-flechas: #f3e7d8;
 }
 
 .boton:focus-visible {
@@ -115,9 +148,14 @@ body {
 }
 
 .boton:disabled:hover {
-    background-color: var(--color-ciruela, #32232a);
-    border-color: var(--color-ciruela, #32232a);
+    background-color: var(--color-azul, #485a7a);
+    border-color: var(--color-azul, #485a7a);
     color: #ffffff;
+}
+
+.boton-intercambio:disabled:hover {
+    background-color: var(--color-acento, #9f6932);
+    border-color: var(--color-acento, #9f6932);
 }
 
 
@@ -135,6 +173,16 @@ Andika en body, titulos Josefin Sans------------- */
 :root {
     --fuente-titulos: "Josefin Sans", sans-serif;
     --fuente-texto: "Andika", sans-serif;
+
+    /* paleta del documento de arquitectura */
+    --color-oscuro: #1d1617;
+    --color-ciruela: #32232a;
+    --color-azul: #485a7a;
+    --color-azul-oscuro: #2a374d;
+    --color-acento: #9f6932;
+    --color-rechazo: #522623;
+    --color-arena: #d6c5b1;
+    --color-ocre: #b18754;
 }
 
 body {

@@ -67,7 +67,8 @@
 
         @if (Model.Activo && Model.Disponible && !esPropietario && estaAutenticado)
         {
-            <a asp-controller="Intercambio" asp-action="Solicitar" asp-route-id="@Model.Id" class="boton boton-principal">
+            <a asp-controller="Intercambio" asp-action="Solicitar" asp-route-id="@Model.Id" class="boton boton-intercambio">
+                <svg class="icono-intercambio" aria-hidden="true"><use href="#icono-intercambio" /></svg>
                 Solicitar BookMatch
             </a>
         }
