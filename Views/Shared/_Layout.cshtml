@@ -20,6 +20,18 @@
 </head>
 
 <body>
+    <!-- icono de intercambio: dos libros con flechas. Se dibuja una vez aca y los botones lo usan con <use> -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="icono-intercambio" viewBox="0 0 64 40" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="currentColor" d="M4 10c4-2 8-2 10 0v20c-2-2-6-2-10 0z" />
+            <path stroke="currentColor" d="M14 10c2-2 6-2 10 0v20c-4-2-8-2-10 0" />
+            <path stroke="currentColor" d="M40 10c4-2 8-2 10 0v20c-2-2-6-2-10 0z" />
+            <path stroke="currentColor" d="M50 10c2-2 6-2 10 0v20c-4-2-8-2-10 0" />
+            <path stroke="var(--color-flechas, currentColor)" d="M27 15h10m-3-3 3 3-3 3" />
+            <path stroke="var(--color-flechas, currentColor)" d="M37 25H27m3 3-3-3 3-3" />
+        </symbol>
+    </svg>
+
     <header>
         <nav class="navbar navbar-expand-lg encabezado-bookmatch mb-3" data-bs-theme="dark">
             <div class="container-fluid">

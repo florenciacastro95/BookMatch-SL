@@ -55,15 +55,16 @@
     <div class="d-flex flex-wrap gap-3 mb-4">
         @if (Model.PuedeCambiarA(EstadoIntercambio.Aceptado) && esUsuarioDestino)
         {
-            <button type="button" class="boton boton-principal" data-bs-toggle="modal"
+            <button type="button" class="boton boton-intercambio" data-bs-toggle="modal"
                     data-bs-target="#confirmarAceptacion">
+                <svg class="icono-intercambio" aria-hidden="true"><use href="#icono-intercambio" /></svg>
                 Aceptar intercambio
             </button>
         }
 
         @if (Model.PuedeCambiarA(EstadoIntercambio.Rechazado) && esUsuarioDestino)
         {
-            <button type="button" class="boton boton-secundario" data-bs-toggle="modal" data-bs-target="#confirmarRechazo">
+            <button type="button" class="boton boton-rechazo" data-bs-toggle="modal" data-bs-target="#confirmarRechazo">
                 Rechazar propuesta
             </button>
         }
