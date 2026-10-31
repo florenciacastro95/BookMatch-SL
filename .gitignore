@@ -16,5 +16,6 @@ obj/Debug/net10.0/Bookmatch-SL.AssemblyInfo.cs
 /obj/Debug
 /obj
 /obj
-/wwwroot/uploads/obj/
+/wwwroot/uploads/
+obj/
 bin/
