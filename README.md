@@ -104,3 +104,13 @@ dotnet run --environment Development
 ```
 
 Abrir en el navegador la dirección que aparece en la terminal.
+
+### Probar la API
+
+La colección de Postman con las pruebas de la API está en `postman/BookMatch-SL.postman_collection.json`.
+
+1. Con el proyecto corriendo, importar ese archivo en Postman.
+2. En las variables de la colección completar `email` y `password` con un usuario de prueba.
+3. Ejecutar primero el Login. El token se guarda solo y lo usan los otros pedidos.
+
+Si la app corre en otra dirección, cambiar también la variable `baseUrl`.
