@@ -13,4 +13,6 @@ public interface IRepositorio<T>
     int ObtenerCantidad();
 
     T? ObtenerPorId(int id);
+
+    
 }
