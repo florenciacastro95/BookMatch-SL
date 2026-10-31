@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "BookMatch-SL API",
+    "description": "Pruebas de la API de BookMatch con JWT.\n\nComo usarla:\n1. Levantar la app con `dotnet run --launch-profile http` (queda en http://localhost:5076).\n2. En las variables de la coleccion completar `email` y `password` con un usuario de prueba.\n3. Ejecutar primero el Login: guarda el token solo en la variable `token`.\n4. Despues ejecutar los demas pedidos, que usan ese token.\n\nResultados esperados:\n- Login: 200 con el token (401 si el email o la contraseña estan mal).\n- Mi perfil: 200 con id, nombre, email y rol.\n- Solo administrador: 200 si el usuario es Administrador, 403 si es un usuario comun.\n- Solo administrador sin token: 401.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// si el login salio bien, guardamos el token para usarlo en los otros pedidos",
+              "if (pm.response.code === 200) {",
+              "    pm.collectionVariables.set(\"token\", pm.response.json().accessToken);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        },
+        "description": "Se manda el email y la contraseña y la API devuelve el token JWT."
+      }
+    },
+    {
+      "name": "Mi perfil",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/perfil/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "perfil", "me"]
+        },
+        "description": "Con el token devuelve los datos del usuario que inicio sesion."
+      }
+    },
+    {
+      "name": "Solo administrador",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/perfil/administracion",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "perfil", "administracion"]
+        },
+        "description": "Solo entra un usuario con rol Administrador. Con un usuario comun da 403."
+      }
+    },
+    {
+      "name": "Solo administrador sin token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/perfil/administracion",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "perfil", "administracion"]
+        },
+        "description": "Sin token la API no sabe quien sos y responde 401."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5076"
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
