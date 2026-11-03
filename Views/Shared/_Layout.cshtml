@@ -22,7 +22,8 @@
 <body>
     <!-- icono de intercambio: dos libros con flechas. Se dibuja una vez aca y los botones lo usan con <use> -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-        <symbol id="icono-intercambio" viewBox="0 0 64 40" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icono-intercambio" viewBox="0 0 64 40" fill="none" stroke-width="3" stroke-linecap="round"
+                stroke-linejoin="round">
             <path stroke="currentColor" d="M4 10c4-2 8-2 10 0v20c-2-2-6-2-10 0z" />
             <path stroke="currentColor" d="M14 10c2-2 6-2 10 0v20c-4-2-8-2-10 0" />
             <path stroke="currentColor" d="M40 10c4-2 8-2 10 0v20c-2-2-6-2-10 0z" />
@@ -33,7 +34,7 @@
     </svg>
 
     <header>
-        <nav class="navbar navbar-expand-lg encabezado-bookmatch mb-3" data-bs-theme="dark">
+        <nav class="navbar navbar-expand-xl encabezado-bookmatch mb-3" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
                     <img src="~/bookmatch.ico" alt="" width="40" height="40" />
@@ -73,67 +74,90 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Auth" asp-action="Perfil">
-                                    Mi perfil
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Auth" asp-action="CambiarPassword">
-                                    Cambiar contraseña
-                                </a>
-                            </li>
-
                             @if (User.IsInRole("Administrador"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Usuarios" asp-action="Index">
-                                        Usuarios
-                                    </a>
-                                </li>
+                                <li class="nav-item dropdown">
+                                    <button class="nav-link dropdown-toggle" type="button" id="menuAdministracion"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        Administración
+                                    </button>
 
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Categoria" asp-action="Index">
-                                        Categorías
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Auditoria" asp-action="Index">
-                                        Auditoría
-                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="menuAdministracion">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Usuarios" asp-action="Index">
+                                                Usuarios
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Categoria" asp-action="Index">
+                                                Categorías
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Auditoria" asp-action="Index">
+                                                Auditoría
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                             }
                         }
                     </ul>
 
-                    <div class="d-flex align-items-center gap-2">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <span class="navbar-text">
-                                Hola, @User.Identity.Name
-                            </span>
-
-                            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-
-                                <button type="submit" class="btn btn-outline-secondary">
-                                    Cerrar sesión
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav cuenta-bookmatch">
+                            <li class="nav-item dropdown">
+                                <button class="nav-link dropdown-toggle" type="button" id="menuCuenta"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    Mi cuenta
                                 </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-primary">
+
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuCuenta">
+                                    <li>
+                                        <span class="dropdown-item-text">
+                                            Hola, @User.Identity.Name
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Auth" asp-action="Perfil">
+                                            Mi perfil
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Auth" asp-action="CambiarPassword">
+                                            Cambiar contraseña
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <form asp-controller="Auth" asp-action="Logout" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item">
+                                                Cerrar sesión
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center gap-2">
+                            <a asp-controller="Auth" asp-action="Login" class="boton boton-secundario">
                                 Ingresar
                             </a>
-
-                            <a asp-controller="Auth" asp-action="Registro" class="btn btn-primary">
+                            <a asp-controller="Auth" asp-action="Registro" class="boton boton-principal">
                                 Registrarme
                             </a>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>

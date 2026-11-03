@@ -1,4 +1,3 @@
-
 @model Bookmatch_SL.Models.Libro
 
 @{
@@ -11,15 +10,11 @@
 <div class="container mt-4" style="max-width: 650px;">
     <h2>Editar libro</h2>
 
-    <form asp-action="Edit"
-          asp-route-id="@Model.Id"
-          method="post"
-          enctype="multipart/form-data">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
 
         <input type="hidden" asp-for="Id" />
 
-        <div asp-validation-summary="ModelOnly"
-             class="text-danger mb-3"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <div class="mb-3">
             <label asp-for="Titulo" class="form-label"></label>
@@ -47,8 +42,7 @@
                 Categoría
             </label>
 
-            <select asp-for="CategoriaId"
-                    class="form-select"
+            <select asp-for="CategoriaId" class="form-select"
                     asp-items="@(new SelectList(ViewBag.Categorias, "Id", "Nombre"))">
             </select>
         </div>
@@ -56,8 +50,7 @@
         <div class="mb-3">
             <label asp-for="Formato" class="form-label"></label>
 
-            <select asp-for="Formato"
-                    class="form-select"
+            <select asp-for="Formato" class="form-select"
                     asp-items="Html.GetEnumSelectList<Bookmatch_SL.Models.Enums.Formato>()">
             </select>
         </div>
@@ -67,8 +60,7 @@
                 Estado de conservación
             </label>
 
-            <select asp-for="EstadoConservacion"
-                    class="form-select"
+            <select asp-for="EstadoConservacion" class="form-select"
                     asp-items="Html.GetEnumSelectList<Bookmatch_SL.Models.Enums.EstadoConservacion>()">
             </select>
         </div>
@@ -77,8 +69,7 @@
             <label class="form-label">Portada actual</label>
 
             <div>
-                <img src="@Model.PortadaUrl"
-                     alt="Portada actual de @Model.Titulo"
+                <img src="@Model.PortadaUrl" alt="Portada actual de @Model.Titulo"
                      style="width: 120px; height: 160px; object-fit: cover;" />
             </div>
         </div>
@@ -88,10 +79,7 @@
                 Cambiar portada (opcional)
             </label>
 
-            <input type="file"
-                   id="portadaArchivo"
-                   name="portadaArchivo"
-                   class="form-control"
+            <input type="file" id="portadaArchivo" name="portadaArchivo" class="form-control"
                    accept=".jpg,.jpeg,.png,.webp" />
         </div>
 
@@ -105,21 +93,14 @@
             {
                 @if (Model.Disponible)
                 {
-                    <input type="checkbox"
-                           class="form-check-input"
-                           checked
-                           disabled />
+                    <input type="checkbox" class="form-check-input" checked disabled />
                 }
                 else
                 {
-                    <input type="checkbox"
-                           class="form-check-input"
-                           disabled />
+                    <input type="checkbox" class="form-check-input" disabled />
                 }
 
-                <input type="hidden"
-                       name="Disponible"
-                       value="@Model.Disponible.ToString().ToLowerInvariant()" />
+                <input type="hidden" name="Disponible" value="@Model.Disponible.ToString().ToLowerInvariant()" />
 
                 <label class="form-check-label">
                     Disponible para trueque (bloqueado)
@@ -134,22 +115,19 @@
             }
             else
             {
-                <input asp-for="Disponible"
-                       class="form-check-input" />
+                <input asp-for="Disponible" class="form-check-input" />
 
-                <label asp-for="Disponible"
-                       class="form-check-label">
+                <label asp-for="Disponible" class="form-check-label">
                     Disponible para trueque
                 </label>
             }
         </div>
 
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="boton boton-principal">
             Guardar cambios
         </button>
 
-        <a asp-action="MiBiblioteca"
-           class="btn btn-outline-secondary">
+        <a asp-action="MiBiblioteca" class="boton boton-secundario">
             Volver a mi biblioteca
         </a>
     </form>

@@ -20,11 +20,11 @@
     </p>
 
     <p>
-        <a asp-action="Create" class="btn btn-primary">
+        <a asp-action="Create" class="boton boton-principal">
             Publicar nuevo libro
         </a>
 
-        <a asp-action="Index" class="btn btn-outline-secondary">
+        <a asp-action="Index" class="boton boton-secundario">
             Volver al catálogo
         </a>
     </p>
@@ -73,15 +73,15 @@
                             </td>
 
                             <td>
-                                <a asp-action="Edit" asp-route-id="@libro.Id" class="btn btn-sm btn-primary">
+                                <a asp-action="Edit" asp-route-id="@libro.Id" class="boton boton-principal">
                                     Editar
                                 </a>
 
-                                <a asp-action="Details" asp-route-id="@libro.Id" class="btn btn-sm btn-outline-secondary">
+                                <a asp-action="Details" asp-route-id="@libro.Id" class="boton boton-secundario">
                                     Ver
                                 </a>
 
-                                <a asp-action="Delete" asp-route-id="@libro.Id" class="btn btn-sm btn-outline-danger">
+                                <a asp-action="Delete" asp-route-id="@libro.Id" class="boton boton-rechazo">
                                     Dar de baja
                                 </a>
                             </td>

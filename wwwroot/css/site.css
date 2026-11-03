@@ -81,7 +81,6 @@ body {
     cursor: pointer;
 }
 
-/* combinacion B que eligio Erika: azul de la paleta, combina con el encabezado */
 .boton-principal {
     background-color: var(--color-azul, #485a7a);
     border-color: var(--color-azul, #485a7a);
@@ -101,8 +100,9 @@ body {
 }
 
 .boton-secundario:hover {
-    background-color: var(--color-arena, #d6c5b1);
-    color: var(--color-ciruela, #32232a);
+    background-color: var(--color-azul, #485a7a);
+    border-color: var(--color-azul, #485a7a);
+    color: #ffffff;
 }
 
 /* intercambio: color acento para que siempre resalte */
@@ -129,7 +129,7 @@ body {
     color: #ffffff;
 }
 
-/* icono de intercambio: dos libros con flechas (esta en _Layout) */
+/* icono de intercambio*/
 .icono-intercambio {
     width: 1.6em;
     height: 1em;
@@ -240,6 +240,60 @@ textarea,
 
 .encabezado-bookmatch .btn:hover {
     color: #2A374D;
-    background-color: #FFFFFF;
+    background-color: #D6C5B1;
+    border-color: #D6C5B1;
 }
 
+
+.encabezado-bookmatch .navbar-nav {
+    gap: 0.35rem;
+}
+
+.encabezado-bookmatch .nav-link {
+    padding: 0.75rem;
+    white-space: nowrap;
+    border-radius: 0.25rem;
+}
+
+.encabezado-bookmatch button.nav-link {
+    border: 0;
+    background-color: transparent;
+    font: inherit;
+}
+
+.encabezado-bookmatch .nav-link:hover,
+.encabezado-bookmatch .nav-link:focus-visible,
+.encabezado-bookmatch .nav-link.show {
+    color: #D6C5B1;
+    background-color: transparent;
+}
+
+.encabezado-bookmatch .dropdown-menu {
+    --bs-dropdown-bg: #2a374d;
+    --bs-dropdown-color: #ffffff;
+    --bs-dropdown-link-color: #ffffff;
+    --bs-dropdown-link-hover-color: #d6c5b1;
+    --bs-dropdown-link-hover-bg: transparent;
+    --bs-dropdown-link-active-color: #d6c5b1;
+    --bs-dropdown-link-active-bg: transparent;
+    --bs-dropdown-border-color: #485a7a;
+    --bs-dropdown-divider-bg: #485a7a;
+    min-width: 14rem;
+    border-radius: 0;
+}
+
+.encabezado-bookmatch .dropdown-item {
+    padding: 0.65rem 1rem;
+}
+
+.encabezado-bookmatch .dropdown-item-text {
+    color: #ffffff;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 1199.98px) {
+    .encabezado-bookmatch .navbar-collapse {
+        padding-top: 1rem;
+    }
+}

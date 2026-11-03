@@ -18,7 +18,7 @@
 
     <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="boton boton-rechazo">Sí, eliminar</button>
+        <a asp-action="Index" class="boton boton-secundario">Cancelar</a>
     </form>
 </div>

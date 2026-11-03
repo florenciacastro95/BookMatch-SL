@@ -18,15 +18,12 @@
         <form asp-action="Login" method="post">
             <input type="hidden" asp-for="ReturnUrl" />
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger mb-3"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control"
-                       autocomplete="email" />
-                <span asp-validation-for="Email"
-                      class="text-danger"></span>
+                <input asp-for="Email" class="form-control" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
@@ -34,11 +31,9 @@
                     Contraseña
                 </label>
 
-                <input asp-for="Password" class="form-control"
-                       autocomplete="current-password" />
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
 
-                <span asp-validation-for="Password"
-                      class="text-danger"></span>
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="form-check mb-3">
@@ -48,12 +43,11 @@
                 </label>
             </div>
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="boton boton-principal">
                 Ingresar
             </button>
 
-            <a asp-action="Registro"
-               class="btn btn-outline-secondary">
+            <a asp-action="Registro" class="boton boton-secundario">
                 Crear cuenta
             </a>
         </form>

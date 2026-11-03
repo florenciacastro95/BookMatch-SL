@@ -18,32 +18,25 @@
         @if (!string.IsNullOrWhiteSpace(Model.AvatarActualUrl))
         {
             <div class="mb-3">
-                <img src="@Model.AvatarActualUrl"
-                     alt="Avatar de perfil"
-                     class="rounded-circle border"
+                <img src="@Model.AvatarActualUrl" alt="Avatar de perfil" class="rounded-circle border"
                      style="width: 120px; height: 120px; object-fit: cover;" />
             </div>
         }
 
-        <form asp-action="Perfil"
-              method="post"
-              enctype="multipart/form-data">
+        <form asp-action="Perfil" method="post" enctype="multipart/form-data">
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger mb-3"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
                 <label asp-for="Nombre" class="form-label"></label>
                 <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre"
-                      class="text-danger"></span>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
                 <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email"
-                      class="text-danger"></span>
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
@@ -51,22 +44,19 @@
                     Cambiar avatar
                 </label>
 
-                <input asp-for="Avatar" type="file" class="form-control"
-                       accept=".jpg,.jpeg,.png,.webp" />
+                <input asp-for="Avatar" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
 
-                <span asp-validation-for="Avatar"
-                      class="text-danger"></span>
+                <span asp-validation-for="Avatar" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="boton boton-principal">
                 Guardar perfil
             </button>
         </form>
 
         <hr />
 
-        <a asp-action="CambiarPassword"
-           class="btn btn-outline-secondary">
+        <a asp-action="CambiarPassword" class="boton boton-secundario">
             Cambiar contraseña
         </a>
     </div>
