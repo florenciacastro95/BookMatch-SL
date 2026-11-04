@@ -271,7 +271,7 @@ El módulo de categorías permite listar, crear, modificar y desactivar categor�
 
 **Código:** [CategoriaController.cs](./Controllers/CategoriaController.cs) · [Views/Categoria/Index.cshtml](./Views/Categoria/Index.cshtml)
 
-**Demostraciones:** [GIF](./docs/evidencias/04-vue/abm-categorias-vue-output.gif) · [Video](./docs/abm-categorias-vue.mp4)
+**Demostraciones:** [GIF](./docs/evidencias/04-vue/abm-categorias-vue-output.gif) · [Video](https://drive.google.com/file/d/1smFCAFhAnA1YF_ahjUU9JZEaQ_UgSl4s/view?usp=sharing)
 
 ### 5. Paginación del lado del servidor
 
