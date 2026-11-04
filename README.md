@@ -174,10 +174,31 @@ El perfil también configura el entorno `Development`. Si el navegador no se abr
 
 El SQL incluye usuarios de prueba con los roles **Administrador** y **Usuario**. Para probar el inicio de sesión, usá las credenciales de prueba que se indican a continuación.
 
-| Rol | Email | Contraseña |
-|---|---|---|
-| Administrador | `ericastro@ulp.edu.ar` | **Completar con la clave de prueba antes de entregar** |
-| Usuario | `florcastro@ulp.edu.ar` | **Completar con la clave de prueba antes de entregar** |
+> **Nota:** Todas las cuentas listadas a continuación son ficticias y se utilizan exclusivamente para pruebas de desarrollo, roles y permisos dentro de la aplicación.
+
+---
+
+## ⚡ Administradores (ADMINS)
+
+| Nombre | Correo Electrónico | Contraseña | Rol |
+| :--- | :--- | :--- | :--- |
+| **Eri Castro** | `eriCastro@ulp.edu.ar` | `ulp12345` | `Admin` |
+| **Sebas Castro** | `sebasCastro@ulp.edu.ar` | `ulp12345` | `Admin` |
+
+---
+
+## 👤 Usuarios Comunes (USERS)
+
+| Nombre | Correo Electrónico | Contraseña | Rol |
+| :--- | :--- | :--- | :--- |
+| **Flor Castro** | `florCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Grupo (bi)Castro** | `grupoBiCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Inmobiliaria Castro** | `inmobiliariaCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Cristian Castro** | `tuAmorEsAzulCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Nelson Castro** | `deNingunaManeraCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Fidel Castro** | `queNoLoAbsuelvaLaHistoriaCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Roli Castro** | `roliCastro@ulp.edu.ar` | `ulp12345` | `User` |
+| **Luciano Castro** | `holaguapaCastro@ulp.edu.ar` | `ulp12345` | `User` |
 
 Las contraseñas de la base están almacenadas como hashes, por lo que no se pueden recuperar leyendo el SQL. Antes de entregar, hay que confirmar las contraseñas originales de prueba o asignarles nuevas y actualizar esta tabla con las claves en texto plano destinadas exclusivamente a la evaluación.
 

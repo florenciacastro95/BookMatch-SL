@@ -11,7 +11,7 @@ bin/
 *.suo
 
 Prueba_rubrica.md
-
+uploads.zip
 Thumbs.db
 .DS_Store
 obj/Debug/net10.0/Bookmatch-SL.AssemblyInfo.cs
