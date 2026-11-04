@@ -1,3 +1,136 @@
+# Bookmatch-SL 📚
+
+Plataforma web para el intercambio de libros físicos entre usuarios de San Luis.
+
+Bookmatch-SL permite explorar un catálogo público de libros, publicar ejemplares propios, proponer intercambios y comunicarse con otros usuarios mediante un chat asociado a cada intercambio.
+
+El sistema cuenta con autenticación, roles de usuario y administrador, gestión de libros, auditoría de operaciones y una API REST protegida mediante JWT.
+
+---
+### ⚠️ Nota Aclaratoria (Disclaimer)
+Los usuarios de prueba y los libros cargados en el sistema tienen un tinte humorístico debido a una particularidad del equipo de desarrollo: **todos los integrantes que colaboramos en este proyecto compartimos el apellido "Castro"**. 
+
+Las referencias o nombres utilizados (como Fidel Castro, Nelson Castro, etc.) se incluyeron exclusivamente como un juego de palabras interno y de prueba para el entorno de desarrollo. Bajo ningún punto pretenden ofender, hacer alusión política, ni fijar posición ideológica de ningún tipo.
+
+---
+
+# Matriz de evidencias de requerimientos mínimos
+
+| Requerimiento mínimo | Estado | Enlace al código / controladores | Evidencia |
+|---|---|---|---|
+| **1. Modelo de datos y persistencia** | ✅ Cumplido | [BookDbContext.cs](./Data/BookDbContext.cs) · [Models](./Models/) | [Ver DER para la DB de BookMatch](./docs/evidencias/01-modelo-datos/BookMatch.png) |
+| **2. Login, roles y avatar** | ✅ Cumplido | [AuthController.cs](./Controllers/AuthController.cs) · [UsuariosController.cs](./Controllers/UsuariosController.cs) | [Ver vista no autenticada](./docs/evidencias/02-autenticacion/noautenticado_Evidencia_punt2.png) • [Ver perfil rol usuario](./docs/evidencias/02-autenticacion/perfilLucianoCastro_Evidencia_punt2.png) • [Ver vista rol admin](./docs/evidencias/02-autenticacion/perfilEriCastro_Evidencia_punt2.png) |
+| **3. Manejo de archivos adicional al avatar** | ✅ Cumplido | [LibroController.cs](./Controllers/LibroController.cs) · [ServicioPortada.cs](./Services/ServicioPortada.cs) | [Ver demostración](./docs/evidencias/3-manejo-de-archivos/) |
+| **4. ABM con Vue.js + AJAX** | ✅ Cumplido | [Código Vue.js implementado para categoria](./Views/Categoria/Index.cshtml) | [Ver demostración](./docs/evidencias/04-vue/abm-categorias-vue-output.gif) | |
+| **5. Paginación del lado del servidor** | ✅ Cumplido | [RepositorioLibro.cs](./Repositories/RepositorioLibro.cs) | [Ver evidencias](./docs/evidencias/05-paginacion/) |
+| **6. Selección asíncrona de entidades relacionadas** | ✅ Cumplido | [IntercambioController.cs](./Controllers/IntercambioController.cs) | [Ver evidencias](./docs/evidencias/06-busqueda-ajax/) |
+| **7. Web API REST + JWT** | ✅ Implementado | [AuthApiController.cs](./Controllers/Api/AuthApiController.cs) · [PerfilApiController.cs](./Controllers/Api/PerfilApiController.cs) | [Ver evidencias](./docs/evidencias/07-api-jwt/api-jwt-bearerpostmanseba.png) |
+
+# Evidencias de implementación
+
+## 1. Modelo de datos y persistencia
+
+El proyecto utiliza Entity Framework Core para la persistencia de las entidades relacionadas.
+
+Entidades principales:
+
+- Usuario
+- Categoría
+- Libro
+- Intercambio
+- Mensaje
+- Auditoría
+
+Se implementan relaciones 1:N y entidades dependientes de otras dos, como Intercambio, que relaciona usuarios y libros.
+
+**Código:**
+
+- [BookDbContext.cs](./Data/BookDbContext.cs)
+- [Carpeta Models](./Models/)
+
+**Diagrama entidad-relación:**
+
+<img src="./docs/evidencias/01-modelo-datos/BookMatch.png" width="780" alt="Diagrama entidad-relación de Bookmatch-SL">
+
+*Diagrama de entidades, claves y relaciones de la base de datos.*
+
+## 2. Login, roles y avatar
+
+El sistema utiliza autenticación mediante cookies y dos roles: Usuario y Administrador.
+
+Las funcionalidades administrativas están protegidas en el backend. Los usuarios pueden gestionar su perfil y cargar un avatar personalizado.
+
+**Código:**
+
+- [AuthController.cs](./Controllers/AuthController.cs)
+- [UsuariosController.cs](./Controllers/UsuariosController.cs)
+- [ServicioAvatar.cs](./Services/ServicioAvatar.cs)
+
+**Perfil de usuario con avatar:**
+
+<img src="./docs/evidencias/02-autenticacion/perfilLucianoCastro_Evidencia_punt2.png" width="680" alt="Perfil de Luciano Castro con avatar personalizado">
+
+*Captura del perfil de Luciano Castro con el avatar cargado.*
+
+**Control de acceso por roles:**
+
+<img src="./docs/evidencias/02-autenticacion/noautenticado_Evidencia_punt2.png" width="720" alt="Opciones disponibles según el rol del usuario">
+
+*Captura que muestra las opciones administrativas*
+
+<img src="./docs/evidencias/02-autenticacion/perfilEriCastro_Evidencia_punt2.png" width="720" alt="Opciones disponibles según el rol del usuario">
+
+*Captura de invitado al ingresar, no hay opción para ver perfil*
+
+## 3. Manejo de archivos
+
+Además del avatar, el sistema permite cargar imágenes de portada para los libros publicados.
+
+Los archivos se validan y almacenan en el servidor dentro de `wwwroot/uploads/portadas`. En la base de datos se conserva la ruta de acceso a cada imagen mediante `PortadaUrl`.
+
+**Código:**
+
+- [LibroController.cs](./Controllers/LibroController.cs)
+- [ServicioPortada.cs](./Services/ServicioPortada.cs)
+- [Create.cshtml](./Views/Libro/Create.cshtml)
+- [Edit.cshtml](./Views/Libro/Edit.cshtml)
+
+**Demostración de carga de portada:**
+
+<img src="./docs/evidencias/03-archivos/portada-subida.gif" width="700" alt="Demostración de carga de una portada de libro">
+
+*GIF: selección de imagen, publicación del libro y visualización de la portada.*
+
+**Video completo:**
+
+[▶ Ver demostración completa de carga y almacenamiento de portadas](REEMPLAZAR_POR_LINK_REAL_DEL_VIDEO)
+
+**Archivo almacenado en el servidor:**
+
+<img src="./docs/evidencias/03-archivos/portada-guardada.png" width="680" alt="Portada almacenada en la carpeta de archivos del servidor">
+
+*Captura de la carpeta donde se almacenan las portadas.*
+
+## 4. ABM con Vue.js + AJAX
+
+El módulo permite realizar las operaciones de alta, baja, modificación y listado mediante una interfaz reactiva que se comunica con el servidor a través de AJAX y JSON, sin recargar la página.
+
+**Código:**
+
+- [Componente Vue](PENDIENTE_URL)
+- [Controlador/API](PENDIENTE_URL)
+- [Vista que integra Vue](PENDIENTE_URL)
+
+**Demostración del ABM:**
+
+<img src="./docs/evidencias/04-vue/abm-categorias.gif" width="700" alt="Demostración del ABM desarrollado con Vue">
+
+*GIF mostrando el alta y listado de categoría*
+
+**Video completo:**
+
+[▶ Ver demostración del carga de una categoría reactivo si el gif se ve de mala calidad](https://drive.google.com/file/d/1fM65AhLEb1NdQK95lsVw_kka1g-UIxgF/view?usp=drive_link)
+
 ## Configuración de la base de datos local
 
 - Cada integrante debe configurar la base en su pc.
