@@ -56,7 +56,7 @@ Los comandos siguientes se ejecutan desde la carpeta del proyecto, donde está `
 
 Las portadas y los avatares se almacenan en `wwwroot/uploads/`. Esa carpeta está incluida en el `.gitignore`, por lo que las imágenes no se descargan al clonar el repositorio.
 
-Para que los registros del SQL muestren sus imágenes, también se entrega por separado el archivo **`uploads_bookmatch.zip`**. Descomprimí su contenido dentro de `wwwroot/uploads/`. El ZIP contiene las carpetas `portadas` y `avatares`, por lo que la estructura final debe quedar así:
+Para que los registros del SQL muestren sus imágenes, también se entrega por separado el archivo **[`uploads_bookmatch.zip`](https://drive.google.com/file/d/1X_eqTTZYRfGzAAIyymR3AaYB8dKrf6qw/view?usp=sharing)**. Descomprimí su contenido dentro de `wwwroot/uploads/`. El ZIP contiene las carpetas `portadas` y `avatares`, por lo que la estructura final debe quedar así:
 
 ```text
 wwwroot/
